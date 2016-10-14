@@ -530,10 +530,10 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 
 # end ENTITY(top)
 # ---------------
-set_global_assignment -name VHDL_FILE Components/onepulse.vhd
-set_global_assignment -name VHDL_FILE Components/LCD_Display/LCD_Display.vhd
-set_global_assignment -name VHDL_FILE Components/Debounce/DEBOUNCE.VHD
-set_global_assignment -name VHDL_FILE Components/clock_div/CLK_DIV.VHD
+set_global_assignment -name VHDL_FILE src/misc/onepulse.vhd
+set_global_assignment -name VHDL_FILE src/misc/lcd_display.vhd
+set_global_assignment -name VHDL_FILE src/misc/debounce.vhd
+set_global_assignment -name VHDL_FILE src/misc/clk_div.vhd
 set_global_assignment -name VERILOG_FILE src/hexdigit.v
 set_global_assignment -name VERILOG_FILE src/ui_handler.v
 set_global_assignment -name VERILOG_FILE src/register_file.v
