@@ -79,10 +79,10 @@ module top(
 	register_file regfile(SW[4:0],,,,,reset,clock,SW[4:0],clock,reg_out1,reg_out2,reg_out_dbg);
 	
 	// set up program counter and clock counter
-	counter(clock, reset, cc, pc);
+	counter counter_inst(clock, reset, cc, pc);
 
 	// handle ui using combinational logic, so it updates faster than the 1hz clock.
-	ui_handler(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg, 
+	ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg, 
 					lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
 	// create LCD driver instance
