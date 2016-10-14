@@ -67,10 +67,12 @@ module top(
 	assign clock = ((SW[17] && manual_clock) || (~SW[17] && clk_1hz));
 	
 	// set up instruction memory access
-	instr_mem rom(SW[14:10]*4,SW[14:10]*4,clock,clock,rom_out,rom_out_dbg);
+	// negate clock to make memory do stuff on falling edge
+	instr_mem rom(SW[14:10]*4,SW[14:10]*4,~clock,~clock,rom_out,rom_out_dbg);
 	
 	// set up data memory access
-	data_mem ram(SW[9:5]*4,SW[9:5]*4,clock,clock,,,,,ram_out,ram_out_dbg);
+	// negate clock to make memory do stuff on falling edge
+	data_mem ram(SW[9:5]*4,SW[9:5]*4,~clock,~clock,,,,,ram_out,ram_out_dbg);
 	
 	// lcd_line1 is always rom_out.
 	assign lcd_line1 = rom_out;
@@ -79,7 +81,7 @@ module top(
 	register_file regfile(SW[4:0],,,,,reset,clock,SW[4:0],clock,reg_out1,reg_out2,reg_out_dbg);
 	
 	// set up program counter and clock counter
-	counter counter_inst(clock, reset, cc, pc);
+	counter counter_inst(clock, reset,,, cc, pc);
 
 	// handle ui using combinational logic, so it updates faster than the 1hz clock.
 	ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg, 
