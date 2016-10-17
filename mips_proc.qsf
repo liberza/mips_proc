@@ -541,5 +541,5 @@ set_global_assignment -name VERILOG_FILE src/instr_mem.v
 set_global_assignment -name VERILOG_FILE src/data_mem.v
 set_global_assignment -name VERILOG_FILE src/counter.v
 set_global_assignment -name VERILOG_FILE src/top.v
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name VERILOG_FILE src/controller.v
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

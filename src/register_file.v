@@ -56,20 +56,28 @@ module register_file(
 	
 	// read on falling edge
 	always @(negedge clock) begin
-		if (clock_debug == 1'b1) begin
+		//if (clock_debug == 1'b1) begin
 			// set data_out_debug
-			data_out_debug <= registers[read_address_debug];
-		end
+		//	data_out_debug <= registers[read_address_debug];
+		//end
 		if (reset == 1'b1) begin
 			// set data_out_* to 0
 			data_out_1 <= 32'h0;
 			data_out_2 <= 32'h0;
-			data_out_debug <= 32'h0;
+			//data_out_debug <= 32'h0;
 		end else begin
 			// set data_out_* values
 			data_out_1 <= registers[read_address_1];
 			data_out_2 <= registers[read_address_2];
-			data_out_debug <= data_out_debug;
+			//data_out_debug <= data_out_debug;
+		end
+	end
+	
+	always @(negedge clock_debug) begin
+		if (reset == 1'b1) begin
+			data_out_debug <= 32'h0;
+		end else begin
+			data_out_debug <= registers[read_address_debug];
 		end
 	end
 	

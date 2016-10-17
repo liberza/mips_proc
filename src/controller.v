@@ -1,11 +1,12 @@
-module controller(input wire op[5:0],
-						input wire func[5:0],
+module controller(input wire[5:0] op,
+						input wire[5:0] func,
 						input wire zero,
 						input wire clock,
 						input wire reset,
-						output reg muxctrl[6:0],
-						output reg memctrl[1:0],
-						output reg aluctrl[2:0]
+						output reg[6:0] muxctrl,
+						output reg[1:0] memctrl,
+						output reg[2:0] aluctrl
 						);
 	
+endmodule
 	

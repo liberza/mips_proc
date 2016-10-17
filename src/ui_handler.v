@@ -34,7 +34,7 @@ module ui_handler(input wire[17:0] SW,
 			// Figure out what to put on the LCD
 			if (SW[16:15] == 1'b00) begin	// register
 				//LCD_DATA1 <= SW[4:0];
-				addr <= SW[4:0]*4;
+				addr <= SW[4:0];
 				lcd_data <= reg_out;
 			end else if (SW[16:15] == 1'b01) begin	// data
 				//LCD_DATA1 <= SW[9:5]*4;
