@@ -98,6 +98,9 @@ module top(
 	wire[1:0] id_memctrl;
 	wire[2:0] id_aluctrl;
 	
+	// setup controller. combinational logic.
+	controller(instr[31:26], instr[6:0], ,reset, id_muxctrl, id_memctrl, id_aluctrl);
+	
 	// register file instance
 	register_file regfile(instr[25:21],
 								 instr[20:16],
@@ -147,7 +150,7 @@ module top(
 	
 	pipeline EX_MEM(clock,
 						 ex_d1_out, ex_d2_out, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
-						 mem_data_in, mem_addr_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl, );
+						 mem_data_in, mem_addr_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
 	
 	// set up data memory access
 	// negate clock to make memory do stuff on falling edge
@@ -163,7 +166,7 @@ module top(
 	
 	pipeline MEM_WB(clock,
 						 ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
-						 wb_d1_in, wb_d2_in, wb_rs, wb_rt, wb_rt,wb_muxctrl,wb_memctrl,);
+						 wb_d1_in, wb_d2_in, wb_rs, wb_rt, wb_rt,wb_muxctrl,wb_memctrl);
 						
 	
 	// ==============
