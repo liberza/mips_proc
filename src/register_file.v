@@ -30,55 +30,35 @@ module register_file(
 	end
 	
 	// write on rising edge
-	always @(posedge clock) begin
+	always @(posedge clock or posedge reset) begin
+	
 		if (reset == 1'b1) begin
-			// set registers to 0
+			// set registers to i
 			for (i=0; i<32; i=i+1) begin
-				registers[i] <= 32'h0;
+				registers[i] <= i;
 			end
 		end else begin
+		
 			// save previous reg values
 			for (i=0; i<32; i=i+1) begin
-				if (i !== write_address) begin
-					registers[i] <= registers[i];
-				end
+				registers[i] <= registers[i];
 			end
 			if (write_enable == 1'b1) begin
 				// set new register value
-				if (i == 0) begin // not for 0 register though
-					registers[i] <= registers[i];
-				end else begin
-					registers[write_address] <= write_data_in;
-				end
+				registers[write_address] <= write_data_in;
 			end
 		end
 	end
 	
 	// read on falling edge
-	always @(negedge clock) begin
-		//if (clock_debug == 1'b1) begin
-			// set data_out_debug
-		//	data_out_debug <= registers[read_address_debug];
-		//end
-		if (reset == 1'b1) begin
-			// set data_out_* to 0
-			data_out_1 <= 32'h0;
-			data_out_2 <= 32'h0;
-			//data_out_debug <= 32'h0;
-		end else begin
-			// set data_out_* values
-			data_out_1 <= registers[read_address_1];
-			data_out_2 <= registers[read_address_2];
-			//data_out_debug <= data_out_debug;
-		end
+	always @(negedge clock or negedge reset) begin
+		// set data_out_* values
+		data_out_1 <= registers[read_address_1];
+		data_out_2 <= registers[read_address_2];
 	end
 	
-	always @(negedge clock_debug) begin
-		if (reset == 1'b1) begin
-			data_out_debug <= 32'h0;
-		end else begin
-			data_out_debug <= registers[read_address_debug];
-		end
+	always @(negedge clock_debug or negedge reset) begin
+		data_out_debug <= registers[read_address_debug];
 	end
 	
 endmodule

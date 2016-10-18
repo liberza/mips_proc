@@ -495,7 +495,6 @@ set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
 # =====================
 set_global_assignment -name SIMULATION_MODE FUNCTIONAL
 set_global_assignment -name VECTOR_OUTPUT_FORMAT VWF
-set_global_assignment -name INCREMENTAL_VECTOR_INPUT_SOURCE /home/nick/ece/473/lab4/register_file/register_file_test.vwf
 
 # Power Estimation Assignments
 # ============================
@@ -507,8 +506,8 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 
 	# EDA Netlist Writer Assignments
 	# ==============================
-	set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
-	set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST ON -section_id eda_simulation
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST ON -section_id eda_simulation
 
 # end EDA_TOOL_SETTINGS(eda_simulation)
 # -------------------------------------
@@ -521,9 +520,9 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 
 		# Incremental Compilation Assignments
 		# ===================================
-		set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-		set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-		set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 
 	# end DESIGN_PARTITION(Top)
 	# -------------------------
@@ -544,4 +543,6 @@ set_global_assignment -name VERILOG_FILE src/top.v
 set_global_assignment -name VERILOG_FILE src/controller.v
 set_global_assignment -name VERILOG_FILE src/pipeline.v
 set_global_assignment -name VERILOG_FILE src/execution.v
+set_global_assignment -name VECTOR_WAVEFORM_FILE src/Waveform.vwf
+set_global_assignment -name INCREMENTAL_VECTOR_INPUT_SOURCE /home/nick/git/mips_proc/src/Waveform.vwf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

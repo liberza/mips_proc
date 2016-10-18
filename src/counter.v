@@ -8,8 +8,8 @@ module counter(
 	);
 
 	initial begin
-		prog_count = 0;
-		clock_count = 0;
+		prog_count <= 0;
+		clock_count <= 0;
 	end
 		
 	always @(posedge clock or posedge reset) begin

@@ -54,6 +54,7 @@ module top(
 	wire[31:0] data_mem_in;
 	wire[31:0] data_mem_addr;
 	
+	wire mem_clock;
 
 
 	// pull LCD_ON and LCD_BLON high.
@@ -69,11 +70,14 @@ module top(
 
 	// configure pushbuttons. debounce and pulse-ify.
 	debounce db1(KEY[1], clk_100hz, manual_clock);
-	debounce db2(KEY[0], clk_100hz, reset_db);
-	onepulse op2(reset_db, clk_1hz, reset);
+	debounce db2(KEY[0], clk_100hz, reset);
 	
 	// allow switching between manual and system clock with SW17.
 	assign clock = ((SW[17] && manual_clock) || (~SW[17] && clk_1hz));
+	
+	assign mem_clock = ((SW[17] && manual_clock) ||
+							  (~SW[17] && clk_1hz) ||
+							  (reset));
 	
 	// =================
 	// Instruction fetch
@@ -86,7 +90,7 @@ module top(
 	// negate clock to make memory do stuff on falling edge
 	instr_mem rom(pc,SW[14:10]*4,~clock,~clock,rom_out,rom_out_dbg);
 	
-	pipeline IF_ID(clock,rom_out,,,,,,,,instr);
+	pipeline IF_ID(clock,reset,rom_out,,,,,,,,instr);
 	
 	// ==================
 	// Instruction decode
@@ -106,7 +110,7 @@ module top(
 								 instr[20:16],
 								 wb_d2_out,
 								 wb_rd,
-								 wb_memctrl[1],
+								 wb_memctrl[0],
 								 reset,
 								 clock,
 								 SW[4:0],
@@ -129,12 +133,11 @@ module top(
 	wire[1:0] ex_memctrl;
 	wire[2:0] ex_aluctrl;
 	
-	pipeline ID_EX(clock,
+	pipeline ID_EX(clock, reset,
 						reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
 						ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 	
 	execution(ex_d1_in, ex_d2_in, ex_aluctrl, ex_d1_out, ex_d2_out);
-	
 	
 	// =============
 	// Memory access
@@ -148,13 +151,13 @@ module top(
 	wire[6:0] mem_muxctrl;
 	wire[1:0] mem_memctrl;
 	
-	pipeline EX_MEM(clock,
+	pipeline EX_MEM(clock, reset,
 						 ex_d1_out, ex_d2_out, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
 						 mem_data_in, mem_addr_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
 	
 	// set up data memory access
 	// negate clock to make memory do stuff on falling edge
-	data_mem ram(mem_addr_in,SW[9:5]*4,~clock,~clock,mem_data_in,,mem_memctrl[0],,ram_out,ram_out_dbg);
+	data_mem ram(mem_addr_in,SW[9:5]*4,~clock,~clock,mem_data_in,,mem_memctrl[1],,ram_out,ram_out_dbg);
 
 	// ==========
 	// Write-back
@@ -164,22 +167,23 @@ module top(
 	wire[6:0] wb_muxctrl;
 	wire[1:0] wb_memctrl;
 	
-	pipeline MEM_WB(clock,
+	pipeline MEM_WB(clock, reset,
 						 ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
-						 wb_d1_in, wb_d2_in, wb_rs, wb_rt, wb_rt,wb_muxctrl,wb_memctrl);
-						
-	
+						 wb_d1_out, wb_d2_out, wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
+
+	//assign lcd_line2 = wb_d2_out;
+
 	// ==============
 	// User interface
 	// ==============
-	
+	wire [31:0] fakeline2;
 	// handle ui using combinational logic, so it updates faster than the 1hz clock.
 	ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg, 
 					lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
 	// lcd_line1 is always rom_out.
-	assign lcd_line1 = rom_out_dbg;
-					
+	assign lcd_line1 = rom_out;
+
 	// create LCD driver instance
 	LCD_Display lcd_driver(~reset, CLOCK_50, lcd_line1, lcd_line2, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
 
