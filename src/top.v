@@ -134,8 +134,8 @@ module top(
     wire[2:0] ex_aluctrl;
     
     pipeline ID_EX(clock, reset,
-                        reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
-                        ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
+                   reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
+                   ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
     
     execution(ex_d1_in, ex_d2_in, ex_aluctrl, ex_d1_out, ex_d2_out);
     
