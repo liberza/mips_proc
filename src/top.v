@@ -101,6 +101,7 @@ module top(
                    reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
+    // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
     mux3 d1_mux(fwd_d1_ctrl, ex_d1_in, mem_addr_in, wb_out, alu_d1);
