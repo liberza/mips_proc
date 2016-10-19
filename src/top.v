@@ -19,7 +19,6 @@ module top(
     output wire LCD_ON,
     output wire LCD_BLON);
     
-    
     // ==========================
     // Clock/reset initialization
     // ==========================
@@ -96,10 +95,13 @@ module top(
     wire[6:0] ex_muxctrl;
     wire[1:0] ex_memctrl;
     wire[2:0] ex_aluctrl;
+    wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
     
     pipeline ID_EX(clock, reset,
                    reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
+
+    forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
     mux3 d1_mux(fwd_d1_ctrl, ex_d1_in, mem_addr_in, wb_out, alu_d1);
     mux3 d2_mux(fwd_d2_ctrl, ex_d2_in, mem_addr_in, wb_out, alu_d2);
