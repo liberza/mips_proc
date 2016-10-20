@@ -1,5 +1,7 @@
 module top(
     input wire[17:0] SW,		// toggle switches
+    input wire[17:0] LEDR,
+    input wire[17:0] LEDG,
     input wire[2:0] KEY,		// manual clock / reset
     input wire CLOCK_50,
     // hex LEDS
@@ -70,11 +72,16 @@ module top(
     wire[6:0] id_muxctrl;
     wire[2:0] id_memctrl;
     wire[2:0] id_aluctrl;
+
+    assign LEDR[6:0] = id_muxctrl[6:0];
+    assign LEDR[9:7] = id_memctrl[2:0];
     
     // setup controller. combinational logic.
     controller(instr[31:26], instr[6:0], ,reset, id_muxctrl, id_memctrl, id_aluctrl);
 
     bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble, pc_offset);
+
+    assign LEDR[17] = bubble;
     
     // register file instance
     register_file regfile(instr[25:21],
@@ -105,6 +112,8 @@ module top(
                    reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
+    assign LEDR[12:10] = ex_aluctrl[2:0];
+
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
@@ -126,10 +135,12 @@ module top(
     wire[2:0] mem_memctrl;
     wire[31:0] ram_out;
     wire[31:0] ram_out_dbg;
+
+    assign LEDG[12:10] = mem_memctrl[2:0];
     
     pipeline EX_MEM(clock, reset,
-                         ex_d1_out, ex_d2_out, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
-                         mem_data_in, mem_addr_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
+                    ex_d1_out, ex_d2_out, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
+                    mem_data_in, mem_addr_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
     
     // set up data memory access
     // negate clock to make memory do stuff on falling edge
@@ -142,10 +153,13 @@ module top(
     wire[4:0] wb_rs, wb_rt, wb_rd;
     wire[6:0] wb_muxctrl;
     wire[2:0] wb_memctrl;
+
+    assign LEDG[6:0] = wb_muxctrl[6:0];
+    assign LEDG[9:7] = wb_memctrl[2:0];
     
     pipeline MEM_WB(clock, reset,
-                         ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
-                         wb_d1_out, wb_d2_out, wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
+                    ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
+                    wb_d1_out, wb_d2_out, wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
 
     mux2(wb_muxctrl[1], wb_d1_out, wb_d2_out, wb_out);
 
@@ -167,7 +181,7 @@ module top(
 
     // handle ui using combinational logic, so it updates as fast as it can.
     ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg, 
-                    lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
+                       lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
     // lcd_line1 is always rom_out.
     assign lcd_line1 = rom_out;
