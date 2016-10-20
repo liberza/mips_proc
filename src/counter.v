@@ -1,7 +1,7 @@
 module counter(
 	input wire clock,
 	input wire reset,
-	input wire signed[15:0] pc_offset,
+	input wire[15:0] pc_offset,
 	input wire pc_src,
 	output reg[15:0] clock_count,
 	output reg[15:0] prog_count

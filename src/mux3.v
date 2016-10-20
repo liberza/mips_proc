@@ -3,7 +3,7 @@ module mux3(
     input wire[31:0] s0,
     input wire[31:0] s1,
     input wire[31:0] s2,
-    output wire[31:0] out);
+    output reg[31:0] out);
 
     always @(*) begin
         if (ctrl == 0) begin

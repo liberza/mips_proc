@@ -1,6 +1,6 @@
 module top(
     input wire[17:0] SW,		// toggle switches
-    input wire[1:0] KEY,		// manual clock / reset
+    input wire[2:0] KEY,		// manual clock / reset
     input wire CLOCK_50,
     // hex LEDS
     output wire[6:0] HEX0,
@@ -49,9 +49,11 @@ module top(
     wire[31:0] rom_out;
     wire[31:0] rom_out_dbg;
     wire[31:0] instr;
-    
+    wire[15:0] pc_offset;
+    wire bubble;
+
     // set up program counter and clock counter
-    counter counter_inst(clock, reset,,, cc, pc);
+    counter counter_inst(clock, reset, pc_offset, bubble, cc, pc);
     
     // set up instruction memory access
     // negate clock to make memory do stuff on falling edge
@@ -66,11 +68,13 @@ module top(
     wire[31:0] reg_out2;
     wire[31:0] reg_out_dbg;
     wire[6:0] id_muxctrl;
-    wire[1:0] id_memctrl;
+    wire[2:0] id_memctrl;
     wire[2:0] id_aluctrl;
     
     // setup controller. combinational logic.
     controller(instr[31:26], instr[6:0], ,reset, id_muxctrl, id_memctrl, id_aluctrl);
+
+    bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble, pc_offset);
     
     // register file instance
     register_file regfile(instr[25:21],
@@ -93,7 +97,7 @@ module top(
     wire[31:0] alu_d1, alu_d2;
     wire[4:0] ex_rs, ex_rt, ex_rd;
     wire[6:0] ex_muxctrl;
-    wire[1:0] ex_memctrl;
+    wire[2:0] ex_memctrl;
     wire[2:0] ex_aluctrl;
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
     
@@ -119,7 +123,7 @@ module top(
     wire[4:0] mem_rt;
     wire[4:0] mem_rd;
     wire[6:0] mem_muxctrl;
-    wire[1:0] mem_memctrl;
+    wire[2:0] mem_memctrl;
     wire[31:0] ram_out;
     wire[31:0] ram_out_dbg;
     
@@ -137,7 +141,7 @@ module top(
     wire[31:0] wb_d1_in, wb_d2_in, wb_d1_out, wb_d2_out, wb_out;
     wire[4:0] wb_rs, wb_rt, wb_rd;
     wire[6:0] wb_muxctrl;
-    wire[1:0] wb_memctrl;
+    wire[2:0] wb_memctrl;
     
     pipeline MEM_WB(clock, reset,
                          ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,

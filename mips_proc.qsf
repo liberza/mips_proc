@@ -530,6 +530,9 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 # end ENTITY(top)
 # ---------------
 set_global_assignment -name INCREMENTAL_VECTOR_INPUT_SOURCE /home/nick/git/mips_proc/src/Waveform.vwf
+set_global_assignment -name VERILOG_FILE src/bubbler.v
+set_global_assignment -name VERILOG_FILE src/mux3.v
+set_global_assignment -name VERILOG_FILE src/mux2.v
 set_global_assignment -name VERILOG_FILE src/forwarder.v
 set_global_assignment -name VHDL_FILE src/misc/onepulse.vhd
 set_global_assignment -name VHDL_FILE src/misc/lcd_display.vhd
