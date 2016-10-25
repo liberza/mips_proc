@@ -1,9 +1,10 @@
 module top(
     input wire[17:0] SW,		// toggle switches
-    input wire[17:0] LEDR,
-    input wire[17:0] LEDG,
+
     input wire[2:0] KEY,		// manual clock / reset
     input wire CLOCK_50,
+	 output wire[17:0] LEDR,
+    output wire[7:0] LEDG,
     // hex LEDS
     output wire[6:0] HEX0,
     output wire[6:0] HEX1,
@@ -62,7 +63,7 @@ module top(
     instr_mem rom(pc,SW[14:10]*4,~clock,~clock_debug,rom_out,rom_out_dbg);
     
     pipeline IF_ID(clock,reset,rom_out,,,,,,,,instr);
-    
+	 
     // ==================
     // Instruction decode
     // ==================
@@ -72,9 +73,6 @@ module top(
     wire[6:0] id_muxctrl;
     wire[2:0] id_memctrl;
     wire[2:0] id_aluctrl;
-
-    assign LEDR[6:0] = id_muxctrl[6:0];
-    assign LEDR[9:7] = id_memctrl[2:0];
     
     // setup controller. combinational logic.
     controller(instr[31:26], instr[6:0], ,reset, id_muxctrl, id_memctrl, id_aluctrl);
@@ -82,20 +80,22 @@ module top(
     bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble, pc_offset);
 
     assign LEDR[17] = bubble;
-    
+	 
+	 //assign lcd_line2 = wb_out;
+	 
     // register file instance
     register_file regfile(instr[25:21],
-                                 instr[20:16],
-                                 wb_out,
-                                 wb_rd,
-                                 wb_memctrl[0],
-                                 reset,
-                                 clock,
-                                 SW[4:0],
-                                 clock_debug,
-                                 reg_out1,
-                                 reg_out2,
-                                 reg_out_dbg);
+                          instr[20:16],
+                          wb_out,
+                          wb_rd,
+                          wb_memctrl[0],
+                          reset,
+                          clock,
+                          SW[4:0],
+                          clock_debug,
+                          reg_out1,
+                          reg_out2,
+                          reg_out_dbg);
     
     // ==================
     // Execution
@@ -112,14 +112,14 @@ module top(
                    reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
-    assign LEDR[12:10] = ex_aluctrl[2:0];
+    assign LEDR[16:14] = ex_aluctrl[2:0];
 
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
     mux3 d1_mux(fwd_d1_ctrl, ex_d1_in, mem_addr_in, wb_out, alu_d1);
     mux3 d2_mux(fwd_d2_ctrl, ex_d2_in, mem_addr_in, wb_out, alu_d2);
-    
+
     execution(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_d2_out);
     
     // =============
@@ -135,8 +135,6 @@ module top(
     wire[2:0] mem_memctrl;
     wire[31:0] ram_out;
     wire[31:0] ram_out_dbg;
-
-    assign LEDG[12:10] = mem_memctrl[2:0];
     
     pipeline EX_MEM(clock, reset,
                     ex_d1_out, ex_d2_out, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
@@ -155,7 +153,7 @@ module top(
     wire[2:0] wb_memctrl;
 
     assign LEDG[6:0] = wb_muxctrl[6:0];
-    assign LEDG[9:7] = wb_memctrl[2:0];
+    assign LEDR[2:0] = wb_memctrl[2:0];
     
     pipeline MEM_WB(clock, reset,
                     ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
@@ -178,6 +176,8 @@ module top(
     wire[3:0] digit5;
     wire[3:0] digit6;
     wire[3:0] digit7;
+
+	 wire[31:0] fake_lcd;
 
     // handle ui using combinational logic, so it updates as fast as it can.
     ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg, 
@@ -202,5 +202,4 @@ module top(
     hexdigit h5(digit5, HEX5);
     hexdigit h6(digit6, HEX6);
     hexdigit h7(digit7, HEX7);
-    
 endmodule

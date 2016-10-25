@@ -15,9 +15,11 @@ module bubbler(
                 pc_offset = 15'd4;
             end else begin
                 bubble <= 0;
+					 pc_offset = 15'd0;
             end
         end else begin
             bubble <= 0;
+				pc_offset = 15'd0;
         end
     end
 endmodule
