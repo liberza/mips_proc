@@ -72,7 +72,7 @@ module top(
     wire[31:0] reg_out_dbg;
     wire[6:0] id_muxctrl;
     wire[2:0] id_memctrl;
-    wire[2:0] id_aluctrl;
+    wire[3:0] id_aluctrl;
 
     // setup controller. combinational logic.
     controller(instr[31:26], instr[6:0], ,reset, id_muxctrl, id_memctrl, id_aluctrl);
@@ -105,7 +105,7 @@ module top(
     wire[4:0] ex_rs, ex_rt, ex_rd;
     wire[6:0] ex_muxctrl;
     wire[2:0] ex_memctrl;
-    wire[2:0] ex_aluctrl;
+    wire[3:0] ex_aluctrl;
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
 
     pipeline ID_EX(clock, reset,
