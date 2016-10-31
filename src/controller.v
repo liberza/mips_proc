@@ -6,6 +6,28 @@ module controller(input wire[5:0] op,
 						output reg[2:0] memctrl,
 						output reg[3:0] aluctrl
 						);
+// memctrl:
+//  bit 0: reg write
+//  bit 1: mem write
+//  bit 2: mem read
+
+// muxctrl:
+//  bit 0: 
+//  bit 1: mem_to_reg
+//  bit 2:
+//  bit 3:
+//  bit 4:
+//  bit 5:
+//  bit 6:
+
+// aluctrl:
+//  0000 - AND
+//  0001 - OR
+//  0010 - add
+//  0110 - subtract
+//  0111 - pass input d2
+//  1100 - NOR
+
 	always @(*) begin
 		if (reset == 1'b1) begin
 			muxctrl <= 7'b0000000;
