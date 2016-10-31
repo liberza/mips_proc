@@ -75,7 +75,7 @@ module top(
     wire[3:0] id_aluctrl;
 
     // setup controller. combinational logic.
-    controller(instr[31:26], instr[6:0], ,reset, id_muxctrl, id_memctrl, id_aluctrl);
+    controller(instr[31:26], instr[6:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
 
     bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble, pc_offset);
 
@@ -100,7 +100,8 @@ module top(
     // ==================
     // Execution
     // ==================
-    wire[31:0] ex_d1_in, ex_d2_in, ex_d1_out, ex_d2_out;
+    wire[31:0] ex_d1_in, ex_d2_in, ex_d1_out;
+    wire ex_zero;
     wire[31:0] alu_d1, alu_d2;
     wire[4:0] ex_rs, ex_rt, ex_rd;
     wire[6:0] ex_muxctrl;
@@ -120,7 +121,7 @@ module top(
     mux3 d1_mux(fwd_d1_ctrl, ex_d1_in, mem_addr_in, wb_out, alu_d1);
     mux3 d2_mux(fwd_d2_ctrl, ex_d2_in, mem_addr_in, wb_out, alu_d2);
 
-    execution(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_d2_out);
+    execution(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_zero);
 
     // =============
     // Memory access
@@ -137,8 +138,8 @@ module top(
     wire[31:0] ram_out_dbg;
 
     pipeline EX_MEM(clock, reset,
-                    ex_d1_out, ex_d2_out, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
-                    mem_data_in, mem_addr_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
+                    ex_d1_out, alu_d2, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
+                    mem_addr_in, mem_data_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
 
     // set up data memory access
     // negate clock to make memory do stuff on falling edge
