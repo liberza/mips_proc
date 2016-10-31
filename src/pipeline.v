@@ -8,7 +8,7 @@ module pipeline(
 	input wire[4:0] rd_in,
 	input wire[6:0] muxctrl_in,
 	input wire[1:0] memctrl_in,
-	input wire[2:0] aluctrl_in,
+	input wire[3:0] aluctrl_in,
 	output reg[31:0] d1_out,
 	output reg[31:0] d2_out,
 	output reg[4:0] rs_out,
@@ -16,9 +16,9 @@ module pipeline(
 	output reg[4:0] rd_out,
 	output reg[6:0] muxctrl_out,
 	output reg[1:0] memctrl_out,
-	output reg[2:0] aluctrl_out
+	output reg[3:0] aluctrl_out
 	);
-	
+
 	always @(posedge clock) begin
 		if (reset == 1'b1) begin
 			d1_out <= 0;

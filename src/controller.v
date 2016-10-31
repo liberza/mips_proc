@@ -4,9 +4,9 @@ module controller(input wire[5:0] op,
 						input wire reset,
 						output reg[6:0] muxctrl,
 						output reg[2:0] memctrl,
-						output reg[2:0] aluctrl
+						output reg[3:0] aluctrl
 						);
-	always @(*) begin 
+	always @(*) begin
 		if (reset == 1'b1) begin
 			muxctrl <= 7'b0000000;
 			memctrl <= 3'b000;
@@ -27,6 +27,6 @@ module controller(input wire[5:0] op,
 			aluctrl <= 3'b000;
 		end
 	end
-	
+
 endmodule
-	
+

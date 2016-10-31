@@ -21,7 +21,7 @@ module top(
     output wire LCD_RS,
     output wire LCD_ON,
     output wire LCD_BLON);
-    
+
     // ==========================
     // Clock/reset initialization
     // ==========================
@@ -31,7 +31,7 @@ module top(
     wire manual_clock;
     wire manual_clock_debug;
     wire reset;
-    
+
     // configure clock.
     clk_div clk_div1(CLOCK_50,,,,,clk_100hz,,clk_1hz);
 
@@ -39,11 +39,11 @@ module top(
     debounce db3(KEY[2], clk_100hz, manual_clock_debug);
     debounce db2(KEY[1], clk_100hz, manual_clock);
     debounce db1(KEY[0], clk_100hz, reset);
-    
+
     // allow switching between manual and system clock with SW17.
     assign clock = ((SW[17] && manual_clock) || (~SW[17] && clk_1hz));
     assign clock_debug = (clock || manual_clock_debug);
-    
+
     // =================
     // Instruction fetch
     // =================
@@ -57,13 +57,13 @@ module top(
 
     // set up program counter and clock counter
     counter counter_inst(clock, reset, pc_offset, bubble, cc, pc);
-    
+
     // set up instruction memory access
     // negate clock to make memory do stuff on falling edge
     instr_mem rom(pc,SW[14:10]*4,~clock,~clock_debug,rom_out,rom_out_dbg);
-    
+
     pipeline IF_ID(clock,reset,rom_out,,,,,,,,instr);
-	 
+
     // ==================
     // Instruction decode
     // ==================
@@ -73,16 +73,16 @@ module top(
     wire[6:0] id_muxctrl;
     wire[2:0] id_memctrl;
     wire[2:0] id_aluctrl;
-    
+
     // setup controller. combinational logic.
     controller(instr[31:26], instr[6:0], ,reset, id_muxctrl, id_memctrl, id_aluctrl);
 
     bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble, pc_offset);
 
     assign LEDR[17] = bubble;
-	 
+
 	 //assign lcd_line2 = wb_out;
-	 
+
     // register file instance
     register_file regfile(instr[25:21],
                           instr[20:16],
@@ -96,7 +96,7 @@ module top(
                           reg_out1,
                           reg_out2,
                           reg_out_dbg);
-    
+
     // ==================
     // Execution
     // ==================
@@ -107,12 +107,12 @@ module top(
     wire[2:0] ex_memctrl;
     wire[2:0] ex_aluctrl;
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
-    
+
     pipeline ID_EX(clock, reset,
                    reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
-    assign LEDR[16:14] = ex_aluctrl[2:0];
+    assign LEDR[16:14] = ex_aluctrl[3:0];
 
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
@@ -121,7 +121,7 @@ module top(
     mux3 d2_mux(fwd_d2_ctrl, ex_d2_in, mem_addr_in, wb_out, alu_d2);
 
     execution(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_d2_out);
-    
+
     // =============
     // Memory access
     // =============
@@ -135,11 +135,11 @@ module top(
     wire[2:0] mem_memctrl;
     wire[31:0] ram_out;
     wire[31:0] ram_out_dbg;
-    
+
     pipeline EX_MEM(clock, reset,
                     ex_d1_out, ex_d2_out, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
                     mem_data_in, mem_addr_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
-    
+
     // set up data memory access
     // negate clock to make memory do stuff on falling edge
     data_mem ram(mem_addr_in,SW[9:5]*4,~clock,~clock_debug,mem_data_in,,mem_memctrl[1],,ram_out,ram_out_dbg);
@@ -154,7 +154,7 @@ module top(
 
     assign LEDG[6:0] = wb_muxctrl[6:0];
     assign LEDR[2:0] = wb_memctrl[2:0];
-    
+
     pipeline MEM_WB(clock, reset,
                     ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
                     wb_d1_out, wb_d2_out, wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
@@ -180,7 +180,7 @@ module top(
 	 wire[31:0] fake_lcd;
 
     // handle ui using combinational logic, so it updates as fast as it can.
-    ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg, 
+    ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg,
                        lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
     // lcd_line1 is always rom_out.
