@@ -160,7 +160,7 @@ module top(
                     ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
                     wb_d1_out, wb_d2_out, wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
 
-    mux2(wb_muxctrl[1], wb_d1_out, wb_d2_out, wb_out);
+    mux2(wb_muxctrl[1], wb_d2_out, wb_d1_out, wb_out);
 
     //assign lcd_line2 = wb_d2_out;
 
