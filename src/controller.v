@@ -14,11 +14,11 @@ module controller(input wire[5:0] op,
 // muxctrl:
 //  bit 0: ALU_src
 //  bit 1: mem_to_reg
-//  bit 2: reg input mux
-//  bit 3: reg input mux
+//  bit 2: reg input mux bit 0
+//  bit 3: reg input mux bit 1
 //  bit 4: bubble mux
 //  bit 5: shamt or immediate mux
-//  bit 6:
+//  bit 6: jump
 
 // aluctrl:
 //  00000 - AND
@@ -95,7 +95,7 @@ module controller(input wire[5:0] op,
             aluctrl <= 5'b10000;
         end else if (op == 6'b000000 && func == 6'b101010) begin
             // JR
-            muxctrl <= 7'b0000000;
+            muxctrl <= 7'b1000000;
             memctrl <= 3'b001;
             aluctrl <= 5'b01101;
         end else if (op == 6'b000000 && func == 6'b100011) begin
