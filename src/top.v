@@ -77,6 +77,7 @@ module top(
     // setup controller. combinational logic.
     controller(instr[31:26], instr[6:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
 
+    // FIXME: won't work for I-type
     bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble, pc_offset);
 
     mux3 imm_mux(id_muxctrl[0], id_muxctrl[1],
