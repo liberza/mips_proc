@@ -72,12 +72,18 @@ module top(
     wire[31:0] reg_out_dbg;
     wire[15:0] id_muxctrl;
     wire[2:0] id_memctrl;
-    wire[3:0] id_aluctrl;
+    wire[4:0] id_aluctrl;
 
     // setup controller. combinational logic.
     controller(instr[31:26], instr[6:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
 
     bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble, pc_offset);
+
+    mux3 imm_mux(id_muxctrl[0], id_muxctrl[1],
+                 {22{0}, instr[10:6]},          // shamt, 0-padded
+                 {16{instr[15]}, instr[15:0]},  // imm, sign-extended
+                 {6{0}, instr[25:0],            // address, 0-padded
+                 imm_mux_out);
 
     assign LEDR[17] = bubble;
 
@@ -106,13 +112,14 @@ module top(
     wire[4:0] ex_rs, ex_rt, ex_rd;
     wire[15:0] ex_muxctrl;
     wire[2:0] ex_memctrl;
-    wire[3:0] ex_aluctrl;
+    wire[4:0] ex_aluctrl;
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
 
     pipeline ID_EX(clock, reset,
                    reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
+    // FIXME: aluctrl bits
     assign LEDR[16:13] = ex_aluctrl[3:0];
 
     // Forward values if we have a RAW
