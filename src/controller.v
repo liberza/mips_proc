@@ -4,7 +4,7 @@ module controller(input wire[5:0] op,
 						input wire reset,
 						output reg[6:0] muxctrl,
 						output reg[2:0] memctrl,
-						output reg[3:0] aluctrl
+						output reg[4:0] aluctrl
 						);
 // memctrl:
 //  bit 0: reg write
@@ -12,51 +12,75 @@ module controller(input wire[5:0] op,
 //  bit 2: mem read
 
 // muxctrl:
-//  bit 0: 
+//  bit 0: ALU_src
 //  bit 1: mem_to_reg
-//  bit 2:
-//  bit 3:
-//  bit 4:
-//  bit 5:
+//  bit 2: reg input mux
+//  bit 3: reg input mux
+//  bit 4: bubble mux
+//  bit 5: 
 //  bit 6:
 
 // aluctrl:
-//  0000 - AND
-//  0001 - OR
-//  0010 - add
-//  0110 - subtract
-//  0111 - pass input d2
-//  1100 - NOR
+//  00000 - AND
+//  00001 - OR
+//  00010 - add
+//  00110 - subtract
+//  00111 - pass input d2
+//  01100 - NOR
+//  01101 - shift left
+//  01110 - shift right
+//  01111 - shift right, sign extend
 
 	always @(*) begin
 		if (reset == 1'b1) begin
 			muxctrl <= 7'b0000000;
 			memctrl <= 3'b000;
-			aluctrl <= 4'b0000;
+			aluctrl <= 5'b00000;
 		end else if (op == 6'b000000 && func == 6'b100000) begin
             // ADD
-			muxctrl <= 7'b0000010;
+			muxctrl <= 7'b0000000;
 			memctrl <= 3'b001;
-			aluctrl <= 4'b0010;
+			aluctrl <= 5'b00010;
         end else if (op == 6'b000000 && func == 6'b100001) begin
             // ADDU
-            muxctrl <= 7'b0000010;
+            muxctrl <= 7'b0000000;
             memctrl <= 3'b001;
-            aluctrl <= 4'b0010;
+            aluctrl <= 5'b00010;
         end else if (op == 6'b000000 && func =0 6'b100010) begin
             // SUB
-            muxctrl <= 7'b0000010;
+            muxctrl <= 7'b0000000;
             memctrl <= 3'b001;
-            aluctrl <= 4'b0110;
+            aluctrl <= 5'b00110;
+        end else if (op == 6'b000000 && func =0 6'b100011) begin
+            // SUBU
+            muxctrl <= 7'b0000000;
+            memctrl <= 3'b001;
+            aluctrl <= 5'b00110;
+        end else if (op == 6'b000000 && func =0 6'b100011) begin
+            // AND
+            muxctrl <= 7'b0000000;
+            memctrl <= 3'b001;
+            aluctrl <= 5'b00000;
+        end else if (op == 6'b000000 && func =0 6'b100011) begin
+            // OR
+            muxctrl <= 7'b0000000;
+            memctrl <= 3'b001;
+            aluctrl <= 5'b00001;
+        end else if (op == 6'b000000 && func =0 6'b100011) begin
+            // NOR
+            muxctrl <= 7'b0000000;
+            memctrl <= 3'b001;
+            aluctrl <= 5'b01100;
         end else if (op == 6'b000000 && func == 6'b100011) begin
             // LW
             muxctrl <= 7'b0000010;
             memctrl <= 3'b100;
-            aluctrl <= 4'b0010;
+            aluctrl <= 5'b00010;
 		end else begin
+            // NOOP
 			muxctrl <= 7'b0000000;
 			memctrl <= 3'b000;
-			aluctrl <= 4'b0000;
+			aluctrl <= 5'b00000;
 		end
 	end
 
