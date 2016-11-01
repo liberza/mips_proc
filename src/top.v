@@ -118,8 +118,8 @@ module top(
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
-    mux3 d1_mux(fwd_d1_ctrl, ex_d1_in, mem_addr_in, wb_out, alu_d1);
-    mux3 d2_mux(fwd_d2_ctrl, ex_d2_in, mem_addr_in, wb_out, alu_d2);
+    mux3 d1_mux(fwd_d1_ctrl[0], fwd_d1_ctrl[1], ex_d1_in, mem_addr_in, wb_out, alu_d1);
+    mux3 d2_mux(fwd_d2_ctrl[0], fwd_d2_ctrl[1], ex_d2_in, mem_addr_in, wb_out, alu_d2);
 
     execution(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_zero);
 
