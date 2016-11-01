@@ -42,7 +42,7 @@ module controller(input wire[5:0] op,
 			memctrl <= 3'b000;
 			aluctrl <= 5'b01101;
 		end else if (op == 6'b000000 && func == 6'b100000) begin
-            // ADD
+         // ADD
 			muxctrl <= 16'b0000000000000000;
 			memctrl <= 3'b001;
 			aluctrl <= 5'b00010;
@@ -99,7 +99,7 @@ module controller(input wire[5:0] op,
         end else if (op == 6'b000000 && func == 6'b101010) begin
             // JR
             muxctrl <= 16'b0000000001000000;
-            memctrl <= 3'b001;
+            memctrl <= 3'b000;
             aluctrl <= 5'b01101;
         end else if (op == 6'b000000 && func == 6'b100011) begin
             // LW

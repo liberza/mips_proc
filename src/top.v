@@ -62,7 +62,7 @@ module top(
     // negate clock to make memory do stuff on falling edge
     instr_mem rom(pc,SW[14:10]*4,~clock,~clock_debug,rom_out,rom_out_dbg);
 
-    pipeline IF_ID(clock,reset,rom_out,,,,,,,,instr);
+    pipeline IF_ID(clock,reset,rom_out,,,,,,,,,instr);
 
     // ==================
     // Instruction decode
@@ -79,7 +79,9 @@ module top(
     wire[4:0] id_aluctrl;
 
     // setup controller. combinational logic.
-    controller cont_inst(instr[31:26], instr[6:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
+    controller cont_inst(instr[31:26], instr[5:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
+
+    //assign lcd_line2 = instr[5:0];
 
     // FIXME: won't work for I-type. need control lines designating what type?
     bubbler bub_inst(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble);
@@ -130,8 +132,7 @@ module top(
                    reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_imm,  ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
-    // FIXME: aluctrl bits
-    assign LEDR[16:13] = ex_aluctrl[3:0];
+    assign LEDR[16:12] = id_aluctrl[4:0];
 
     // pick between d2 and immediate value
     mux2 alu_src(ex_muxctrl[8],
@@ -190,14 +191,14 @@ module top(
     wire[15:0] wb_muxctrl;
     wire[2:0] wb_memctrl;
 
-    // FIXME: muxctrl bits
-    assign LEDG[6:0] = wb_muxctrl[6:0];
-    assign LEDR[2:0] = wb_memctrl[2:0];
+    assign LEDR[8:0] = id_muxctrl[8:0];
+    assign LEDR[11:9] = id_memctrl[2:0];
 
     pipeline MEM_WB(clock, reset,
                     ram_out, mem_addr_in, , mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
                     wb_d1_out, wb_d2_out, , wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
 
+    // FIXME: rename shit
     mux2 wb_mux(wb_muxctrl[2], wb_d2_out, wb_d1_out, wb_out);
 
     //assign lcd_line2 = wb_d2_out;

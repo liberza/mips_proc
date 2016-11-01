@@ -21,7 +21,13 @@ module register_file(
 	
 	initial begin
 		for (i=0; i<32; i=i+1) begin
-			registers[i] <= i;
+			if (i == 1) begin
+				registers[i] <= -30;
+			end else if (i == 2) begin
+				registers[i] <= 56;
+			end else begin
+				registers[i] <= i;
+			end
 		end
 	
 		data_out_1 <= 32'h0;
@@ -35,7 +41,13 @@ module register_file(
 		if (reset == 1'b1) begin
 			// set registers to i
 			for (i=0; i<32; i=i+1) begin
-				registers[i] <= i;
+				if (i == 1) begin
+					registers[i] <= -30;
+				end else if (i == 2) begin
+					registers[i] <= 56;
+				end else begin
+					registers[i] <= i;
+				end
 			end
 		end else begin
 		
