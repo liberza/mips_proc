@@ -2,7 +2,7 @@ module controller(input wire[5:0] op,
 						input wire[5:0] func,
 						input wire zero,
 						input wire reset,
-						output reg[6:0] muxctrl,
+						output reg[7:0] muxctrl,
 						output reg[2:0] memctrl,
 						output reg[4:0] aluctrl
 						);
@@ -12,10 +12,11 @@ module controller(input wire[5:0] op,
 //  bit 2: mem read
 
 // muxctrl:
-//  bit 0: ALU_src
+//  bit 0: ALU_src bit 0
+//  bit 1: ALU_src bit 1
 //  bit 1: mem_to_reg
-//  bit 2: reg input mux bit 0
-//  bit 3: reg input mux bit 1
+//  bit 2: reg2_loc bit 0
+//  bit 3: reg2_loc mux bit 1
 //  bit 4: bubble mux
 //  bit 5: shamt or immediate mux
 //  bit 6: jump
