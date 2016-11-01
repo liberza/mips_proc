@@ -1,6 +1,6 @@
 // takes care of ALU operations for: ADD, SUB, AND, OR, pass input d2, NOR
-//			including subu, andu
-// according to page 313, these are all that's needed
+//									 Shift right/extend, shift left
+//			including subu, andu. They do the same as add and sub rgiht now
 
 module execution(
 	input wire[31:0] d1_in,
@@ -41,9 +41,21 @@ module execution(
 		// pass input d2
 		assign d1_out = d2_in;
 
+	end else if (aluctrl == 5'b01101) begin
+		// shift left
+		assign d1_out = d1_in << d2_in;
+
+	end else if (aluctrl == 5'b01110) begin
+		// shift right
+		assign d1_out = d1_in >> d2_in;
+
+	end else if (aluctrl == 5'b01111) begin
+		// shift right, sign extend
+		assign d1_out = d1_in >>> d2_in;
+
 	end
 endmodule
 
-01101 - shift left
-01110 - shift right
-01111 - shift right, sign extend
+// 01101 - shift left
+// 01110 - shift right
+// 01111 - shift right, sign extend
