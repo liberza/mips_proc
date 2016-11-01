@@ -7,7 +7,7 @@ module execution(
 	input wire[31:0] d2_in,
 	input wire[4:0] aluctrl,
 	output wire[31:0] d1_out,
-	output wire d2_out			// this is the zero flag
+	output wire d2_out			// this is the zero flag.. is ONE if result is ZERO
 	);
 	if (aluctrl == 5'b00010) begin
 		// add
@@ -19,6 +19,7 @@ module execution(
 
 	end else if (aluctrl == 5'b00110) begin
 		// sub
+		assign d2_out = d1_in - d2_in ? 0 : 1; // set zero flag = 1 if result is 0
 		assign d1_out = d1_in - d2_in;
 
 	end else if (aluctrl == 5'b00110) begin
@@ -53,9 +54,12 @@ module execution(
 		// shift right, sign extend
 		assign d1_out = d1_in >>> d2_in;
 
+	end else if (aluctrl == 5'b10000) begin
+		// slt -- set less than. R[rd] = (R[rs] < R[rt] ? 1 : 0
+		assign d1_out = d1_in < d2_in ? 1 : 0;
+		assign d2_out = d1_in < d2_in ? 1 : 0; // zero flag for branch on less than
+
 	end
 endmodule
 
-// 01101 - shift left
-// 01110 - shift right
-// 01111 - shift right, sign extend
+
