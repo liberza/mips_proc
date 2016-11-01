@@ -10,6 +10,12 @@ module execution(
 	output reg zero			// this is the zero flag.. is ONE if result is ZERO
 	);
 	
+	wire signed [31:0] signed_d1_in;
+	wire signed [31:0] signed_d2_in;
+	
+	assign signed_d1_in = d1_in;
+	assign signed_d2_in = d2_in;
+	
 	always @(*) begin
 		if (aluctrl == 5'b00010) begin
 			// add
@@ -58,8 +64,8 @@ module execution(
 			zero <= 0;
 		end else if (aluctrl == 5'b10000) begin
 			// slt -- set less than. R[rd] = (R[rs] < R[rt] ? 1 : 0
-			d1_out <= d1_in < d2_in ? 1 : 0;
-			zero <= d1_in < d2_in ? 1'b1 : 1'b0; // zero flag for branch on less than
+			d1_out <= signed_d1_in < signed_d2_in ? 1 : 0;
+			zero <= signed_d1_in < signed_d2_in ? 1'b1 : 1'b0; // zero flag for branch on less than
 		end else begin
 			d1_out <= 0;
 			zero <= 1'b0;
