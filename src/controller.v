@@ -21,6 +21,7 @@ module controller(input wire[5:0] op,
 //  bit 6: shamt or immediate mux
 //  bit 7: jump
 //  bit 8: alu_src
+//  bit 9: branch
 
 // aluctrl:
 //  00000 - AND

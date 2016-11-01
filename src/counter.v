@@ -1,10 +1,10 @@
 module counter(
 	input wire clock,
 	input wire reset,
-	input wire[15:0] pc_offset,
-	input wire pc_src,
+	input wire[31:0] next_pc,
+	input wire pc_write,
 	output reg[15:0] clock_count,
-	output reg[15:0] prog_count
+	output reg[31:0] prog_count
 	);
 
 	initial begin
@@ -17,13 +17,13 @@ module counter(
 			// handle resets
 			prog_count <= 0;
 			clock_count <= 0;
-		end else if (pc_src == 1'b1) begin
-			// handle branches / jumps
-			prog_count <= prog_count + 4 + pc_offset;
+		end else if (pc_write == 1'b1) begin
+			// handle branches / jumps / normal incrementing
+			prog_count <= next_pc;
 			clock_count <= clock_count + 1;
 		end else begin
-			// handle normal incrementing of pc and cc
-			prog_count <= prog_count + 4;
+			// handle bubbles
+			prog_count <= prog_count;
 			clock_count <= clock_count + 1;
 		end
 	end

@@ -56,7 +56,7 @@ module top(
     wire bubble;
 
     // set up program counter and clock counter
-    counter counter_inst(clock, reset, pc_offset, bubble, cc, pc);
+    counter counter_inst(clock, reset, next_pc, ~bubble, cc, pc);
 
     // set up instruction memory access
     // negate clock to make memory do stuff on falling edge
@@ -77,8 +77,8 @@ module top(
     // setup controller. combinational logic.
     controller(instr[31:26], instr[6:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
 
-    // FIXME: won't work for I-type
-    bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble, pc_offset);
+    // FIXME: won't work for I-type. need control lines designating what type?
+    bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble);
 
     mux3 imm_mux(id_muxctrl[0], id_muxctrl[1],
                  {22{0}, instr[10:6]},          // shamt, 0-padded
@@ -107,7 +107,7 @@ module top(
     // ==================
     // Execution
     // ==================
-    wire[31:0] ex_d1_in, ex_d2_in, ex_d1_out;
+    wire[31:0] ex_d1_in, ex_d2_in, ex_d1_out, ex_imm;
     wire ex_zero;
     wire[31:0] alu_d1, alu_d2;
     wire[4:0] ex_rs, ex_rt, ex_rd;
@@ -117,8 +117,8 @@ module top(
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
 
     pipeline ID_EX(clock, reset,
-                   reg_out1, reg_out2, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
-                   ex_d1_in, ex_d2_in, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
+                   reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
+                   ex_d1_in, ex_d2_in, ex_imm,  ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
     // FIXME: aluctrl bits
     assign LEDR[16:13] = ex_aluctrl[3:0];
@@ -130,6 +130,13 @@ module top(
     mux3 d2_mux(fwd_d2_ctrl[0], fwd_d2_ctrl[1], ex_d2_in, mem_addr_in, wb_out, alu_d2);
 
     execution(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_zero);
+
+    mux3 pc_src(ex_muxctrl[7], (ex_zero & ex_muxctrl[9]), 
+                (pc + 4),               // normal
+                ex_imm,                 // jump
+                ((ex_imm << 2) + pc),   // branch
+                next_pc);
+                
 
     // =============
     // Memory access
@@ -146,8 +153,8 @@ module top(
     wire[31:0] ram_out_dbg;
 
     pipeline EX_MEM(clock, reset,
-                    ex_d1_out, alu_d2, ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
-                    mem_addr_in, mem_data_in, mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
+                    ex_d1_out, alu_d2, , ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl,,
+                    mem_addr_in, mem_data_in, , mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
 
     // set up data memory access
     // negate clock to make memory do stuff on falling edge
@@ -166,8 +173,8 @@ module top(
     assign LEDR[2:0] = wb_memctrl[2:0];
 
     pipeline MEM_WB(clock, reset,
-                    ram_out, mem_addr_in, mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
-                    wb_d1_out, wb_d2_out, wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
+                    ram_out, mem_addr_in, , mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
+                    wb_d1_out, wb_d2_out, , wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
 
     mux2(wb_muxctrl[2], wb_d2_out, wb_d1_out, wb_out);
 
