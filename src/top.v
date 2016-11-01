@@ -70,7 +70,7 @@ module top(
     wire[31:0] reg_out1;
     wire[31:0] reg_out2;
     wire[31:0] reg_out_dbg;
-    wire[7:0] id_muxctrl;
+    wire[15:0] id_muxctrl;
     wire[2:0] id_memctrl;
     wire[3:0] id_aluctrl;
 
@@ -104,7 +104,7 @@ module top(
     wire ex_zero;
     wire[31:0] alu_d1, alu_d2;
     wire[4:0] ex_rs, ex_rt, ex_rd;
-    wire[7:0] ex_muxctrl;
+    wire[15:0] ex_muxctrl;
     wire[2:0] ex_memctrl;
     wire[3:0] ex_aluctrl;
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
@@ -132,7 +132,7 @@ module top(
     wire[4:0] mem_rs;
     wire[4:0] mem_rt;
     wire[4:0] mem_rd;
-    wire[7:0] mem_muxctrl;
+    wire[15:0] mem_muxctrl;
     wire[2:0] mem_memctrl;
     wire[31:0] ram_out;
     wire[31:0] ram_out_dbg;
@@ -150,7 +150,7 @@ module top(
     // ==========
     wire[31:0] wb_d1_in, wb_d2_in, wb_d1_out, wb_d2_out, wb_out;
     wire[4:0] wb_rs, wb_rt, wb_rd;
-    wire[7:0] wb_muxctrl;
+    wire[15:0] wb_muxctrl;
     wire[2:0] wb_memctrl;
 
     // FIXME: muxctrl bits
