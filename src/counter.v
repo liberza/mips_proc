@@ -3,7 +3,7 @@ module counter(
 	input wire reset,
 	input wire[31:0] next_pc,
 	input wire pc_write,
-	output reg[15:0] clock_count,
+	output reg[31:0] clock_count,
 	output reg[31:0] prog_count
 	);
 

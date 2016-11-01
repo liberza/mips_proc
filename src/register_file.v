@@ -51,6 +51,7 @@ module register_file(
 	end
 	
 	// read on falling edge
+	// FIXME: can't infer register for assignment because clock isn't obvious. this gets combinational logic right now.
 	always @(negedge clock or negedge reset) begin
 		// set data_out_* values
 		data_out_1 <= registers[read_address_1];

@@ -3,7 +3,7 @@ module bubbler(
     input wire[4:0] rt,
     input wire[4:0] ex_rd,
     input wire ex_mem_read,
-    output reg bubble,
+    output reg bubble
     );
 
     always @(*) begin

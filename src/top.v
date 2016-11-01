@@ -48,11 +48,11 @@ module top(
     // Instruction fetch
     // =================
     wire[15:0] cc;	// clock counter
-    wire[15:0] pc;	// program counter
+    wire[32:0] pc;	// program counter
     wire[31:0] rom_out;
     wire[31:0] rom_out_dbg;
     wire[31:0] instr;
-    wire[15:0] pc_offset;
+    wire[32:0] next_pc;
     wire bubble;
 
     // set up program counter and clock counter
@@ -69,23 +69,30 @@ module top(
     // ==================
     wire[31:0] reg_out1;
     wire[31:0] reg_out2;
+	 wire[31:0] id_mux_in1, id_mux_in2, id_mux_in3;
     wire[31:0] reg_out_dbg;
     wire[5:0] id_reg_dest;
+	 wire alu_zero;
+	 wire[31:0] imm_mux_out;
     wire[15:0] id_muxctrl;
     wire[2:0] id_memctrl;
     wire[4:0] id_aluctrl;
 
     // setup controller. combinational logic.
-    controller(instr[31:26], instr[6:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
+    controller cont_inst(instr[31:26], instr[6:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
 
     // FIXME: won't work for I-type. need control lines designating what type?
-    bubbler(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble);
+    bubbler bub_inst(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble);
 
+	 assign id_mux_in1 = {22'd0, instr[10:6]};
+	 sign_extender se_inst(instr[15:0], id_mux_in2);
+	 assign id_mux_in3 = {6'd0, instr[25:0]};
+	 
 
     mux3 imm_src(id_muxctrl[0], id_muxctrl[1],
-                 {22{0}, instr[10:6]},          // shamt, 0-padded
-                 {16{instr[15]}, instr[15:0]},  // imm, sign-extended
-                 {6{0}, instr[25:0],            // address, 0-padded
+                 id_mux_in1,  // shamt, 0-padded
+                 id_mux_in2,  // imm, sign-extended
+                 id_mux_in3,  // address, 0-padded
                  imm_mux_out);
 
     assign LEDR[17] = bubble;
@@ -112,6 +119,7 @@ module top(
     wire[31:0] ex_d1_in, ex_d2_in, ex_d2, ex_d1_out, ex_imm;
     wire ex_zero;
     wire[31:0] alu_d1, alu_d2;
+	 wire[31:0] ex_reg_dest;
     wire[4:0] ex_rs, ex_rt, ex_rd;
     wire[15:0] ex_muxctrl;
     wire[2:0] ex_memctrl;
@@ -137,13 +145,13 @@ module top(
     mux3 d1_mux(fwd_d1_ctrl[0], fwd_d1_ctrl[1], ex_d1_in, mem_addr_in, wb_out, alu_d1);
     mux3 d2_mux(fwd_d2_ctrl[0], fwd_d2_ctrl[1], ex_d2, mem_addr_in, wb_out, alu_d2);
 
-    mux3 ex_reg_dest(ex_muxctrl[3], ex_muxctrl[4],
-                     ex_rd, // rd
-                     ex_rt, // rt
-                     ex_rs, // rs
-                     ex_reg_dest);
+    mux3 ex_rd_src(ex_muxctrl[3], ex_muxctrl[4],
+                   ex_rd, // rd
+                   ex_rt, // rt
+                   ex_rs, // rs
+                   ex_reg_dest);
 
-    execution(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_zero);
+    execution ex_inst(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_zero);
 
     mux3 pc_src(ex_muxctrl[7], (ex_zero & ex_muxctrl[9]), 
                 (pc + 4),               // normal
@@ -190,7 +198,7 @@ module top(
                     ram_out, mem_addr_in, , mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,
                     wb_d1_out, wb_d2_out, , wb_rs, wb_rt, wb_rd,wb_muxctrl,wb_memctrl);
 
-    mux2(wb_muxctrl[2], wb_d2_out, wb_d1_out, wb_out);
+    mux2 wb_mux(wb_muxctrl[2], wb_d2_out, wb_d1_out, wb_out);
 
     //assign lcd_line2 = wb_d2_out;
 
