@@ -71,12 +71,12 @@ module top(
     wire[31:0] reg_out2;
 	wire[31:0] id_mux_in1, id_mux_in2, id_mux_in3;
     wire[31:0] reg_out_dbg;
-    wire[5:0] id_reg_dest;
 	wire alu_zero;
 	wire[31:0] imm_mux_out;
     wire[15:0] id_muxctrl;
     wire[2:0] id_memctrl;
     wire[4:0] id_aluctrl;
+    wire[4:0] id_reg_dest;
 
     // setup controller. combinational logic.
     controller cont_inst(instr[31:26], instr[5:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
@@ -95,6 +95,13 @@ module top(
                  id_mux_in2,  // imm, sign-extended
                  id_mux_in3,  // address, 0-padded
                  imm_mux_out);
+
+    // If I-type, use rt. if sw, use rs.
+    mux3 rd_src(id_muxctrl[0], id_memctrl[1],
+                instr[15:11],
+                instr[20:16],
+                instr[25:21],
+                id_reg_dest);
 
     assign LEDR[17] = bubble;
     assign LEDR[16:12] = id_aluctrl[4:0];
@@ -131,8 +138,10 @@ module top(
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
 
     pipeline ID_EX(clock, reset,
-                   reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
+                   reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], id_reg_dest, id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_imm,  ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
+
+    assign lcd_line2 = ex_rd;
 
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
@@ -211,7 +220,7 @@ module top(
 
     // handle ui using combinational logic, so it updates as fast as it can.
     ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg,
-                       lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
+                       fake_lcd, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
     // lcd_line1 is always rom_out.
     assign lcd_line1 = rom_out;
