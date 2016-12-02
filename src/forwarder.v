@@ -17,7 +17,7 @@ module forwarder(
         end else if (ex_rs == wb_rd) begin
             d1_mux = 2'b10;
 		  end else begin
-				d1_mux = 2'b00;
+			d1_mux = 2'b00;
 		  end
 		  
         if (ex_rt == mem_rd) begin

@@ -22,6 +22,7 @@ module controller(input wire[5:0] op,
 //  bit 7: jump
 //  bit 8: alu_src
 //  bit 9: branch
+//  bit 10: alu I or J type
 
 // aluctrl:
 //  00000 - AND
@@ -35,14 +36,19 @@ module controller(input wire[5:0] op,
 //  01111 - shift right, sign extend
 //  10000 - less than
 //  10001 - less than or equal to
+//  10010 - equal to
+//  10011 - greater than zero
+//  10100 - equal to zero
+//  10101 - shift immediate 16 bits left
 
 	always @(*) begin
 		if (reset == 1'b1) begin
 			muxctrl <= 16'b0000000000000000;
 			memctrl <= 3'b000;
 			aluctrl <= 5'b01101;
+        //* R-TYPE *//
 		end else if (op == 6'b000000 && func == 6'b100000) begin
-         // ADD
+           // ADD
 			muxctrl <= 16'b0000000000000000;
 			memctrl <= 3'b001;
 			aluctrl <= 5'b00010;
@@ -77,22 +83,22 @@ module controller(input wire[5:0] op,
             memctrl <= 3'b001;
             aluctrl <= 5'b01100;
         end else if (op == 6'b000000 && func == 6'b000000) begin
-            // SLL
+            // SLL (shift left logical)
             muxctrl <= 16'b0000000101000000;
             memctrl <= 3'b001;
             aluctrl <= 5'b01101;
         end else if (op == 6'b000000 && func == 6'b000010) begin
-            // SRL
+            // SRL (shift right logical)
             muxctrl <= 16'b0000000101000000;
             memctrl <= 3'b001;
             aluctrl <= 5'b01110;
         end else if (op == 6'b000000 && func == 6'b000011) begin
-            // SRA
+            // SRA (shift right arithmetic)
             muxctrl <= 16'b0000000101000000;
             memctrl <= 3'b001;
             aluctrl <= 5'b01111;
         end else if (op == 6'b000000 && func == 6'b101010) begin
-            // SLT
+            // SLT (set less than)
             muxctrl <= 16'b0000000000000000;
             memctrl <= 3'b001;
             aluctrl <= 5'b10000;
@@ -101,19 +107,87 @@ module controller(input wire[5:0] op,
             muxctrl <= 16'b0000000010000000;
             memctrl <= 3'b000;
             aluctrl <= 5'b01101;
-        end else if (op == 6'b000000 && func == 6'b100011) begin
+
+        //* I-TYPE *//
+		end else if (op == 6'b001100) begin
+            // ANDI
+            muxctrl <= 16'b0000000000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b00000;
+		end else if (op == 6'b001101) begin
+            // ORI
+            muxctrl <= 16'b0000000000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b00001;
+        end else if (op == 6'b001010) begin
+            // SLTI
+            muxctrl <= 16'b0000000000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b10000;
+        end else if (op == 6'b001000) begin
+            // ADDI
+            muxctrl <= 16'b0000000000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b00010;
+        end else if (op == 6'b001001) begin
+            // ADDIU
+            muxctrl <= 16'b0000000000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b00010;
+        end else if (op == 6'b000100) begin
+            // BEQ
+            muxctrl <= 16'b0000001000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b10010;
+        end else if (op == 6'b000101) begin
+            // BNE
+            muxctrl <= 16'b0000001000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b10110;
+        end else if (op == 6'b000111) begin
+            // BGTZ
+            muxctrl <= 16'b0000001000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b10011;
+        end else if (op == 6'b000001) begin
+            // BGEZ
+            muxctrl <= 16'b0000001000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b10111;
+        end else if (op == 6'b100011) begin
             // LW
-            // wrong
-            muxctrl <= 16'b0000000000000010;
+            muxctrl <= 16'b0000000000000001;
             memctrl <= 3'b100;
             aluctrl <= 5'b00010;
-		end else begin
+        end else if (op == 6'b101011) begin
+            // SW
+            muxctrl <= 16'b0000000000000001;
+            memctrl <= 3'b010;
+            aluctrl <= 5'b00010;
+        end else if (op == 6'b001111) begin
+            // LUI
+            muxctrl <= 16'b0000000000000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b10101;
+
+        //* J-TYPE *//
+        end else if (op == 6'b000010) begin
+            // J
+            muxctrl <= 16'b0000000010000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b01101;
+        end else if (op == 6'b000011) begin
+            // JAL
+            // need to add something to store current PC
+            muxctrl <= 16'b0000000010000001;
+            memctrl <= 3'b000;
+            aluctrl <= 5'b01101;
+        end else begin
             // NOOP
 			muxctrl <= 16'b0000000000000000;
 			memctrl <= 3'b000;
 			aluctrl <= 5'b01101;
-		end
-	end
-
+        end
+    end
 endmodule
 

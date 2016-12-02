@@ -1,7 +1,7 @@
 module top(
     input wire[17:0] SW,		// toggle switches
 
-    input wire[2:0] KEY,		// manual clock / reset
+    input wire[3:0] KEY,		// manual clock / reset
     input wire CLOCK_50,
 	 output wire[17:0] LEDR,
     output wire[7:0] LEDG,
@@ -36,9 +36,9 @@ module top(
     clk_div clk_div1(CLOCK_50,,,,,clk_100hz,,clk_1hz);
 
     // configure pushbuttons. debounce and pulse-ify.
+    debounce db1(KEY[3], clk_100hz, reset);
     debounce db3(KEY[2], clk_100hz, manual_clock_debug);
     debounce db2(KEY[1], clk_100hz, manual_clock);
-    debounce db1(KEY[0], clk_100hz, reset);
 
     // allow switching between manual and system clock with SW17.
     assign clock = ((SW[17] && manual_clock) || (~SW[17] && clk_1hz));
@@ -60,7 +60,7 @@ module top(
 
     // set up instruction memory access
     // negate clock to make memory do stuff on falling edge
-    instr_mem rom(pc,SW[14:10]*4,~clock,~clock_debug,rom_out,rom_out_dbg);
+    instr_mem rom(pc,SW[14:10]*4,(~clock),(~clock_debug),rom_out,rom_out_dbg);
 
     pipeline IF_ID(clock,reset,rom_out,,,,,,,,,instr);
 
@@ -81,7 +81,6 @@ module top(
     // setup controller. combinational logic.
     controller cont_inst(instr[31:26], instr[5:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
 
-    //assign lcd_line2 = instr[5:0];
 
     // FIXME: won't work for I-type. need control lines designating what type?
     bubbler bub_inst(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble);
@@ -101,8 +100,8 @@ module top(
     assign LEDR[16:12] = id_aluctrl[4:0];
     //assign LEDR[11:9] = id_memctrl[2:0];
     assign LEDR[10:0] = id_muxctrl[10:0];
-
-	 //assign lcd_line2 = wb_out;
+    assign LEDG[1:0] = fwd_d1_ctrl[1:0];
+    assign LEDG[3:2] = fwd_d2_ctrl[1:0];
 
     // register file instance
     register_file regfile(instr[25:21],
@@ -135,18 +134,11 @@ module top(
                    reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_imm,  ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
-
-    // pick between d2 and immediate value
-    mux2 alu_src(ex_muxctrl[8],
-                 ex_d2_in,
-                 ex_imm,
-                 ex_d2);
-
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
     mux3 d1_mux(fwd_d1_ctrl[0], fwd_d1_ctrl[1], ex_d1_in, mem_addr_in, wb_out, alu_d1);
-    mux3 d2_mux(fwd_d2_ctrl[0], fwd_d2_ctrl[1], ex_d2, mem_addr_in, wb_out, alu_d2);
+    mux3 d2_mux(fwd_d2_ctrl[0], fwd_d2_ctrl[1], ex_d2_in, mem_addr_in, wb_out, alu_d2);
 
     mux3 ex_rd_src(ex_muxctrl[3], ex_muxctrl[4],
                    ex_rd, // rd
@@ -154,7 +146,7 @@ module top(
                    ex_rs, // rs
                    ex_reg_dest);
 
-    execution ex_inst(alu_d1, alu_d2, ex_aluctrl, ex_d1_out, ex_zero);
+    execution ex_inst(alu_d1, alu_d2, ex_imm, ex_aluctrl, ex_d1_out, ex_zero);
 
     mux3 pc_src(ex_muxctrl[7], (ex_zero & ex_muxctrl[9]), 
                 (pc + 4),               // normal
@@ -200,8 +192,6 @@ module top(
 
     // FIXME: rename shit
     mux2 wb_mux(wb_muxctrl[2], wb_d2_out, wb_d1_out, wb_out);
-
-    //assign lcd_line2 = wb_d2_out;
 
     // ==============
     // User interface

@@ -5,6 +5,7 @@
 module execution(
 	input wire[31:0] d1_in,
 	input wire[31:0] d2_in,
+    input wire[31:0] imm_in,
 	input wire[4:0] aluctrl,
 	output reg[31:0] d1_out,
 	output reg zero			// this is the zero flag.. is ONE if result is ZERO
@@ -52,15 +53,15 @@ module execution(
 			zero <= 0;
 		end else if (aluctrl == 5'b01101) begin
 			// shift left
-			d1_out <= d1_in << d2_in;
+			d1_out <= (d2_in << imm_in);
 			zero <= 0;
 		end else if (aluctrl == 5'b01110) begin
 			// shift right
-			d1_out <= d1_in >> d2_in;
+			d1_out <= (d2_in >> imm_in);
 			zero <= 0;
 		end else if (aluctrl == 5'b01111) begin
 			// shift right, sign extend
-			d1_out <= d1_in >>> d2_in;
+			d1_out <= (d2_in >>> imm_in);
 			zero <= 0;
 		end else if (aluctrl == 5'b10000) begin
 			// slt -- set less than. R[rd] = (R[rs] < R[rt] ? 1 : 0
