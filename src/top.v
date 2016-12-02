@@ -98,6 +98,9 @@ module top(
                  imm_mux_out);
 
     assign LEDR[17] = bubble;
+    assign LEDR[16:12] = id_aluctrl[4:0];
+    //assign LEDR[11:9] = id_memctrl[2:0];
+    assign LEDR[10:0] = id_muxctrl[10:0];
 
 	 //assign lcd_line2 = wb_out;
 
@@ -121,7 +124,7 @@ module top(
     wire[31:0] ex_d1_in, ex_d2_in, ex_d2, ex_d1_out, ex_imm;
     wire ex_zero;
     wire[31:0] alu_d1, alu_d2;
-	 wire[31:0] ex_reg_dest;
+	wire[31:0] ex_reg_dest;
     wire[4:0] ex_rs, ex_rt, ex_rd;
     wire[15:0] ex_muxctrl;
     wire[2:0] ex_memctrl;
@@ -132,7 +135,6 @@ module top(
                    reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], instr[15:11], id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_imm,  ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
-    assign LEDR[16:12] = id_aluctrl[4:0];
 
     // pick between d2 and immediate value
     mux2 alu_src(ex_muxctrl[8],
@@ -191,8 +193,6 @@ module top(
     wire[15:0] wb_muxctrl;
     wire[2:0] wb_memctrl;
 
-    assign LEDR[8:0] = id_muxctrl[8:0];
-    assign LEDR[11:9] = id_memctrl[2:0];
 
     pipeline MEM_WB(clock, reset,
                     ram_out, mem_addr_in, , mem_rs, mem_rt, mem_rd,mem_muxctrl,mem_memctrl,,

@@ -21,6 +21,17 @@ module pipeline(
 	output reg[4:0] aluctrl_out
 	);
 
+    initial begin
+        d1_out = 0;
+        d2_out = 0;
+        imm_out = 0;
+        rs_out = 0;
+        rt_out = 0;
+        muxctrl_out = 0;
+        memctrl_out = 0;
+        aluctrl_out = 0;
+    end
+
 	always @(posedge clock) begin
 		if (reset == 1'b1) begin
 			d1_out <= 0;

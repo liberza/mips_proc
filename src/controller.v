@@ -78,17 +78,17 @@ module controller(input wire[5:0] op,
             aluctrl <= 5'b01100;
         end else if (op == 6'b000000 && func == 6'b000000) begin
             // SLL
-            muxctrl <= 16'b0000000010000000;
+            muxctrl <= 16'b0000000101000000;
             memctrl <= 3'b001;
             aluctrl <= 5'b01101;
         end else if (op == 6'b000000 && func == 6'b000010) begin
             // SRL
-            muxctrl <= 16'b0000000010000000;
+            muxctrl <= 16'b0000000101000000;
             memctrl <= 3'b001;
             aluctrl <= 5'b01110;
         end else if (op == 6'b000000 && func == 6'b000011) begin
             // SRA
-            muxctrl <= 16'b0000000010000000;
+            muxctrl <= 16'b0000000101000000;
             memctrl <= 3'b001;
             aluctrl <= 5'b01111;
         end else if (op == 6'b000000 && func == 6'b101010) begin
@@ -98,11 +98,12 @@ module controller(input wire[5:0] op,
             aluctrl <= 5'b10000;
         end else if (op == 6'b000000 && func == 6'b001000) begin
             // JR
-            muxctrl <= 16'b0000000001000000;
+            muxctrl <= 16'b0000000010000000;
             memctrl <= 3'b000;
             aluctrl <= 5'b01101;
         end else if (op == 6'b000000 && func == 6'b100011) begin
             // LW
+            // wrong
             muxctrl <= 16'b0000000000000010;
             memctrl <= 3'b100;
             aluctrl <= 5'b00010;
