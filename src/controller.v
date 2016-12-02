@@ -112,27 +112,27 @@ module controller(input wire[5:0] op,
 		end else if (op == 6'b001100) begin
             // ANDI
             muxctrl <= 16'b0000000000000001;
-            memctrl <= 3'b000;
+            memctrl <= 3'b001;
             aluctrl <= 5'b00000;
 		end else if (op == 6'b001101) begin
             // ORI
             muxctrl <= 16'b0000000000000001;
-            memctrl <= 3'b000;
+            memctrl <= 3'b001;
             aluctrl <= 5'b00001;
         end else if (op == 6'b001010) begin
             // SLTI
             muxctrl <= 16'b0000000000000001;
-            memctrl <= 3'b000;
+            memctrl <= 3'b001;
             aluctrl <= 5'b10000;
         end else if (op == 6'b001000) begin
             // ADDI
             muxctrl <= 16'b0000000000000001;
-            memctrl <= 3'b000;
+            memctrl <= 3'b001;
             aluctrl <= 5'b00010;
         end else if (op == 6'b001001) begin
             // ADDIU
             muxctrl <= 16'b0000000000000001;
-            memctrl <= 3'b000;
+            memctrl <= 3'b001;
             aluctrl <= 5'b00010;
         end else if (op == 6'b000100) begin
             // BEQ
@@ -167,7 +167,7 @@ module controller(input wire[5:0] op,
         end else if (op == 6'b001111) begin
             // LUI
             muxctrl <= 16'b0000000000000001;
-            memctrl <= 3'b000;
+            memctrl <= 3'b001;
             aluctrl <= 5'b10101;
 
         //* J-TYPE *//
@@ -180,7 +180,7 @@ module controller(input wire[5:0] op,
             // JAL
             // need to add something to store current PC
             muxctrl <= 16'b0000000010000001;
-            memctrl <= 3'b000;
+            memctrl <= 3'b001;
             aluctrl <= 5'b01101;
         end else begin
             // NOOP
