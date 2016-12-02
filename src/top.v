@@ -69,11 +69,11 @@ module top(
     // ==================
     wire[31:0] reg_out1;
     wire[31:0] reg_out2;
-	 wire[31:0] id_mux_in1, id_mux_in2, id_mux_in3;
+	wire[31:0] id_mux_in1, id_mux_in2, id_mux_in3;
     wire[31:0] reg_out_dbg;
     wire[5:0] id_reg_dest;
-	 wire alu_zero;
-	 wire[31:0] imm_mux_out;
+	wire alu_zero;
+	wire[31:0] imm_mux_out;
     wire[15:0] id_muxctrl;
     wire[2:0] id_memctrl;
     wire[4:0] id_aluctrl;
@@ -85,9 +85,9 @@ module top(
     // FIXME: won't work for I-type. need control lines designating what type?
     bubbler bub_inst(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble);
 
-	 assign id_mux_in1 = {22'd0, instr[10:6]};
-	 sign_extender se_inst(instr[15:0], id_mux_in2);
-	 assign id_mux_in3 = {6'd0, instr[25:0]};
+	assign id_mux_in1 = {22'd0, instr[10:6]};
+	sign_extender se_inst(instr[15:0], id_mux_in2);
+	assign id_mux_in3 = {6'd0, instr[25:0]};
 	 
 
     mux3 imm_src(id_muxctrl[0], id_muxctrl[1],
@@ -146,7 +146,7 @@ module top(
                    ex_rs, // rs
                    ex_reg_dest);
 
-    execution ex_inst(alu_d1, alu_d2, ex_imm, ex_aluctrl, ex_d1_out, ex_zero);
+    execution ex_inst(alu_d1, alu_d2, ex_imm, ex_muxctrl[0], ex_aluctrl, ex_d1_out, ex_zero);
 
     mux3 pc_src(ex_muxctrl[7], (ex_zero & ex_muxctrl[9]), 
                 (pc + 4),               // normal
