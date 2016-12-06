@@ -21,7 +21,7 @@ module register_file(
 	
 	initial begin
 		for (i=0; i<32; i=i+1) begin
-            registers[i] <= i;
+            registers[i] <= 0;
 		end
 	
 		data_out_1 <= 32'h0;
@@ -32,7 +32,7 @@ module register_file(
     always @(negedge clock or posedge reset) begin
         if (reset == 1'b1) begin
 			for (i=0; i<32; i=i+1) begin
-                registers[i] = i;
+                registers[i] = 0;
 			end
             data_out_1 = 32'h0;
             data_out_2 = 32'h0;

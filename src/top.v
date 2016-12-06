@@ -158,7 +158,7 @@ module top(
     mux3 pc_src(ex_muxctrl[7], (ex_zero & ex_muxctrl[9]), 
                 (pc + 4),               // normal
                 ex_imm,                 // jump
-                ((ex_imm << 2) + pc),   // branch
+                ((ex_imm << 2)  + pc - 4),   // branch (by the time it gets here, it's 2 instructions late)
                 next_pc);
 
     // =============

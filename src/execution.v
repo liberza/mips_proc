@@ -109,12 +109,12 @@ module execution(
             end
         end else if (aluctrl == 5'b10110) begin
             // BNE
-            d1_out <= (d1_in != imm_in);
-            zero <= (d1_in != imm_in);
+            d1_out <= (d1_in != d2_in);
+            zero <= (d1_in != d2_in);
         end else if (aluctrl == 5'b10010) begin
             // BEQ
-            d1_out <= (d1_in == imm_in);
-            zero <= (d1_in == imm_in);
+            d1_out <= (d1_in == d2_in);
+            zero <= (d1_in == d2_in);
         end else if (aluctrl == 5'b10011) begin
             // BGTZ
             d1_out <= (d1_in > 0);
