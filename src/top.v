@@ -164,6 +164,8 @@ module top(
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
+    assign lcd_line2 = mem_rd;
+
     mux3 d1_mux(fwd_d1_ctrl[0], fwd_d1_ctrl[1], ex_d1_in, mem_addr_in, wb_out, alu_d1);
     mux3 d2_mux(fwd_d2_ctrl[0], fwd_d2_ctrl[1], ex_d2_in, mem_addr_in, wb_out, alu_d2);
 
@@ -237,7 +239,7 @@ module top(
 
     // handle ui using combinational logic, so it updates as fast as it can.
     ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg,
-                       lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
+                       fake_lcd, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
     // lcd_line1 is always rom_out.
     assign lcd_line1 = rom_out;

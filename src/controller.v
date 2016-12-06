@@ -156,7 +156,7 @@ module controller(input wire[5:0] op,
             aluctrl <= 5'b10111;
         end else if (op == 6'b100011) begin
             // LW
-            muxctrl <= 16'b0000000000000001;
+            muxctrl <= 16'b0000000000000101;
             memctrl <= 3'b101;
             aluctrl <= 5'b00010;
         end else if (op == 6'b101011) begin

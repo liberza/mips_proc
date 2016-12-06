@@ -29,14 +29,6 @@ module execution(
                 d1_out <= d1_in + d2_in;
             end
 			zero <= 0;
-		end else if (aluctrl == 5'b00010) begin
-			// addu THIS IS SUPPOSED TO SET SOME EXCEPTION FLAG???
-			if (i_type == 1'b1) begin
-                d1_out <= d1_in + imm_in;
-            end else begin
-                d1_out <= d1_in + d2_in;
-            end
-			zero <= 0;
 		end else if (aluctrl == 5'b00110) begin
 			// sub
 			if (i_type == 1'b1) begin
@@ -46,14 +38,6 @@ module execution(
                 zero <= d1_in - d2_in ? 1'b0 : 1'b1; // set zero flag = 1 if result is 0
                 d1_out <= d1_in - d2_in;
             end
-		end else if (aluctrl == 5'b00110) begin
-			// subu
-			if (i_type == 1'b1) begin
-                d1_out <= d1_in - imm_in;
-            end else begin
-                d1_out <= d1_in - d2_in;
-            end
-            zero <= 0;
 		end else if (aluctrl == 5'b00000) begin
 			// AND
 			if (i_type == 1'b1) begin
