@@ -63,7 +63,7 @@ module top(
     instr_mem rom(pc,SW[14:10]*4,(~clock),(~clock_debug),rom_out,rom_out_dbg);
 
     // reset pipeline if jumping or branching
-    pipeline IF_ID(clock,(reset || ex_muxctrl[7] || (ex_muxctrl[9] & ex_zero)),rom_out,,,,,,,,,instr);
+    pipeline IF_ID(clock,(reset || ex_muxctrl[7] || (ex_muxctrl[9] & ex_zero) || bubble),rom_out,,,,,,,,,instr);
 
     // ==================
     // Instruction decode
