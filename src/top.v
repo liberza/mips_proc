@@ -63,7 +63,7 @@ module top(
     instr_mem rom(pc,SW[14:10]*4,(~clock),(~clock_debug),rom_out,rom_out_dbg);
 
     // reset pipeline if jumping or branching
-    pipeline IF_ID(clock,(reset || ex_muxctrl[7] || ex_muxctrl[9]),rom_out,,,,,,,,,instr);
+    pipeline IF_ID(clock,(reset || ex_muxctrl[7] || (ex_muxctrl[9] & ex_zero)),rom_out,,,,,,,,,instr);
 
     // ==================
     // Instruction decode
@@ -84,8 +84,6 @@ module top(
 
     // setup controller. combinational logic.
     controller cont_inst(instr[31:26], instr[5:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
-
-    assign lcd_line2 = id_muxctrl[10];
 
     // FIXME: won't work for I-type. need control lines designating what type?
     bubbler bub_inst(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble);
@@ -118,7 +116,7 @@ module top(
     // Muxes for JAL
     mux2 reg_data_in_mux(ex_muxctrl[10],
                          wb_out,
-                         pc-8,
+                         pc-4,
                          reg_data_in);
 
     mux2 reg_data_addr_mux(ex_muxctrl[10],
@@ -159,7 +157,7 @@ module top(
     wire[4:0] ex_aluctrl;
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
 
-    pipeline ID_EX(clock, (reset || ex_muxctrl[7] || ex_muxctrl[9]),
+    pipeline ID_EX(clock, (reset || ex_muxctrl[7] || (ex_muxctrl[9] & ex_zero)),
                    reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], id_reg_dest, id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_imm,  ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
@@ -239,7 +237,7 @@ module top(
 
     // handle ui using combinational logic, so it updates as fast as it can.
     ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg,
-                       fake_lcd, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
+                       lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
     // lcd_line1 is always rom_out.
     assign lcd_line1 = rom_out;

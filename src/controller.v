@@ -178,7 +178,6 @@ module controller(input wire[5:0] op,
             aluctrl <= 5'b01101;
         end else if (op == 6'b000011) begin
             // JAL
-            // need to add something to store current PC
             muxctrl <= 16'b0000010010000010;
             memctrl <= 3'b001;
             aluctrl <= 5'b01101;
