@@ -77,6 +77,9 @@ module top(
     wire[2:0] id_memctrl;
     wire[4:0] id_aluctrl;
     wire[4:0] id_reg_dest;
+    wire[31:0] reg_data_in;
+    wire[4:0] reg_data_addr;
+    wire reg_write_flag;
 
     // setup controller. combinational logic.
     controller cont_inst(instr[31:26], instr[5:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
@@ -110,12 +113,29 @@ module top(
     assign LEDG[1:0] = fwd_d1_ctrl[1:0];
     assign LEDG[3:2] = fwd_d2_ctrl[1:0];
 
+    // Muxes for JAL
+    mux2 reg_data_in_mux(ex_muxctrl[10],
+                         wb_out,
+                         pc-8,
+                         reg_data_in);
+
+    mux2 reg_data_addr_mux(ex_muxctrl[10],
+                           wb_rd,
+                           31,
+                           reg_data_addr);
+
+    mux2 reg_write_flag_mux(ex_muxctrl[10],
+                            wb_memctrl[0],
+                            1,
+                            reg_write_flag);
+                            
+
     // register file instance
     register_file regfile(instr[25:21],
                           instr[20:16],
-                          wb_out,
-                          wb_rd,
-                          wb_memctrl[0],
+                          reg_data_in,
+                          reg_data_addr,
+                          reg_write_flag,
                           reset,
                           clock,
                           SW[4:0],
@@ -156,9 +176,9 @@ module top(
     execution ex_inst(alu_d1, alu_d2, ex_imm, ex_muxctrl[0], ex_aluctrl, ex_d1_out, ex_zero);
 
     mux3 pc_src(ex_muxctrl[7], (ex_zero & ex_muxctrl[9]), 
-                (pc + 4),               // normal
-                ex_imm,                 // jump
-                ((ex_imm << 2)  + pc - 4),   // branch (by the time it gets here, it's 2 instructions late)
+                (pc + 4),                           // normal
+                (ex_imm << 2) | (pc & 32'hf0000000),  // jump
+                ((ex_imm << 2)  + pc - 4),          // branch (by the time it gets here, it's 2 instructions late)
                 next_pc);
 
     // =============

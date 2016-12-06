@@ -22,7 +22,7 @@ module controller(input wire[5:0] op,
 //  bit 7: jump
 //  bit 8: alu_src
 //  bit 9: branch
-//  bit 10: alu I or J type
+//  bit 10: jal
 
 // aluctrl:
 //  00000 - AND
@@ -173,13 +173,13 @@ module controller(input wire[5:0] op,
         //* J-TYPE *//
         end else if (op == 6'b000010) begin
             // J
-            muxctrl <= 16'b0000000010000001;
+            muxctrl <= 16'b0000000010000010;
             memctrl <= 3'b000;
             aluctrl <= 5'b01101;
         end else if (op == 6'b000011) begin
             // JAL
             // need to add something to store current PC
-            muxctrl <= 16'b0000000010000001;
+            muxctrl <= 16'b0000010010000010;
             memctrl <= 3'b001;
             aluctrl <= 5'b01101;
         end else begin
