@@ -141,7 +141,6 @@ module top(
                    reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], id_reg_dest, id_muxctrl, id_memctrl, id_aluctrl,
                    ex_d1_in, ex_d2_in, ex_imm,  ex_rs, ex_rt, ex_rd, ex_muxctrl, ex_memctrl, ex_aluctrl);
 
-
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
@@ -161,7 +160,6 @@ module top(
                 ex_imm,                 // jump
                 ((ex_imm << 2) + pc),   // branch
                 next_pc);
-                
 
     // =============
     // Memory access

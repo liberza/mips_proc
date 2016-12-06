@@ -550,7 +550,7 @@ set_global_assignment -name VERILOG_FILE src/controller.v
 set_global_assignment -name VERILOG_FILE src/pipeline.v
 set_global_assignment -name VERILOG_FILE src/execution.v
 set_global_assignment -name VECTOR_WAVEFORM_FILE src/Waveform.vwf
-set_global_assignment -name SMART_RECOMPILE OFF
+set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
 set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS OFF
 set_parameter -name CYCLONEII_SAFE_WRITE "\"RESTRUCTURE\""
