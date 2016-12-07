@@ -199,9 +199,20 @@ module top(
                     ex_d1_out, alu_d2, , ex_rs, ex_rt, ex_reg_dest, ex_muxctrl, ex_memctrl,,
                     mem_addr_in, mem_data_in, , mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
 
+    assign lcd_line2 = (alu_d1);
+
     // set up data memory access
     // negate clock to make memory do stuff on falling edge
-    data_mem ram(mem_addr_in,SW[9:5]*4,~clock,~clock_debug,mem_data_in,,mem_memctrl[1],,ram_out,ram_out_dbg);
+    data_mem ram((mem_addr_in & 32'h0000FFFF), // whatever we assembled with probably assumes von neuman
+                 SW[9:5]*4,
+                 ~clock,
+                 ~clock_debug,
+                 mem_data_in,
+                 ,
+                 mem_memctrl[1],
+                 ,
+                 ram_out,
+                 ram_out_dbg);
 
     // ==========
     // Write-back
@@ -237,7 +248,7 @@ module top(
 
     // handle ui using combinational logic, so it updates as fast as it can.
     ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg,
-                       lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
+                       fake_lcd, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
     // lcd_line1 is always rom_out.
     assign lcd_line1 = rom_out;
