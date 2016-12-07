@@ -1,0 +1,26 @@
+DEPTH = 256;
+WIDTH = 32;
+ADDRESS _RADIX = HEX;
+DATA_RADIX = HEX;
+-- Specify initial data values for memory, format is address : data
+CONTENT BEGIN
+[00..FF]    :   00000000;
+-- Initialize from course website data
+00  :    00000001;
+04  :    00000002;
+08  :    00000003;
+0C  :    00000004;
+10  :    00000005;
+14  :    00000006;
+18  :    00000007;
+1C  :    00000008;
+20  :    00000009;
+24  :    0000000a;
+28  :    00000000;
+2C  :    00000000;
+30  :    00000000;
+34  :    00000000;
+38  :    00000000;
+3C  :    00000000;
+
+END;
