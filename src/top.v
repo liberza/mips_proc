@@ -86,12 +86,11 @@ module top(
     controller cont_inst(instr[31:26], instr[5:0], alu_zero, reset, id_muxctrl, id_memctrl, id_aluctrl);
 
     // FIXME: won't work for I-type. need control lines designating what type?
-    bubbler bub_inst(instr[25:21], instr[20:16], ex_rd, ex_memctrl[2], bubble);
+    bubbler bub_inst(rom_out[25:21], rom_out[20:16], id_reg_dest, id_memctrl[2], bubble);
 
 	assign id_mux_in1 = {22'd0, instr[10:6]};
 	sign_extender se_inst(instr[15:0], id_mux_in2);
 	assign id_mux_in3 = {6'd0, instr[25:0]};
-	 
 
     mux3 imm_src(id_muxctrl[0], id_muxctrl[1],
                  id_mux_in1,  // shamt, 0-padded
@@ -108,7 +107,7 @@ module top(
 
     assign LEDR[17] = bubble;
     assign LEDR[16:12] = id_aluctrl[4:0];
-    //assign LEDR[11:9] = id_memctrl[2:0];
+    // assign LEDR[11:9] = id_memctrl[2:0];
     assign LEDR[10:0] = id_muxctrl[10:0];
     assign LEDG[1:0] = fwd_d1_ctrl[1:0];
     assign LEDG[3:2] = fwd_d2_ctrl[1:0];
@@ -164,7 +163,6 @@ module top(
     // Forward values if we have a RAW
     forwarder fwd(wb_rd, mem_rd, ex_rs, ex_rt, fwd_d1_ctrl, fwd_d2_ctrl);
 
-    assign lcd_line2 = mem_rd;
 
     mux3 d1_mux(fwd_d1_ctrl[0], fwd_d1_ctrl[1], ex_d1_in, mem_addr_in, wb_out, alu_d1);
     mux3 d2_mux(fwd_d2_ctrl[0], fwd_d2_ctrl[1], ex_d2_in, mem_addr_in, wb_out, alu_d2);
@@ -239,7 +237,7 @@ module top(
 
     // handle ui using combinational logic, so it updates as fast as it can.
     ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg,
-                       fake_lcd, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
+                       lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
     // lcd_line1 is always rom_out.
     assign lcd_line1 = rom_out;
