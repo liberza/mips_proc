@@ -102,7 +102,8 @@ module top(
     mux3 rd_src(id_muxctrl[0], id_memctrl[1],
                 instr[15:11],
                 instr[20:16],
-                instr[25:21],
+                //instr[25:21],
+                5'b0,
                 id_reg_dest);
 
     assign LEDR[17] = bubble;
@@ -199,8 +200,6 @@ module top(
                     ex_d1_out, alu_d2, , ex_rs, ex_rt, ex_reg_dest, ex_muxctrl, ex_memctrl,,
                     mem_addr_in, mem_data_in, , mem_rs, mem_rt, mem_rd, mem_muxctrl, mem_memctrl );
 
-    assign lcd_line2 = (alu_d1);
-
     // set up data memory access
     // negate clock to make memory do stuff on falling edge
     data_mem ram((mem_addr_in & 32'h0000FFFF), // whatever we assembled with probably assumes von neuman
@@ -248,7 +247,7 @@ module top(
 
     // handle ui using combinational logic, so it updates as fast as it can.
     ui_handler ui_inst(SW, reset, cc, pc, reg_out_dbg, rom_out_dbg, ram_out_dbg,
-                       fake_lcd, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
+                       lcd_line2, digit7, digit6, digit5, digit4, digit3, digit2, digit1, digit0);
 
     // lcd_line1 is always rom_out.
     assign lcd_line1 = rom_out;
