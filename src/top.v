@@ -156,6 +156,7 @@ module top(
     wire[2:0] ex_memctrl;
     wire[4:0] ex_aluctrl;
     wire[1:0] fwd_d1_ctrl, fwd_d2_ctrl;
+    wire[31:0] possibly_pc;
 
     pipeline ID_EX(clock, (reset || ex_muxctrl[7] || (ex_muxctrl[9] & ex_zero)),
                    reg_out1, reg_out2, imm_mux_out, instr[25:21], instr[20:16], id_reg_dest, id_muxctrl, id_memctrl, id_aluctrl,
@@ -180,7 +181,13 @@ module top(
                 (pc + 4),                           // normal
                 (ex_imm << 2) | (pc & 32'hf0000000),  // jump
                 ((ex_imm << 2)  + pc - 4),          // branch (by the time it gets here, it's 2 instructions late)
-                next_pc);
+                possibly_pc);
+
+    mux2 pc_src2(ex_muxctrl[11],
+                 possibly_pc,
+                 alu_d1,
+                 next_pc);
+                 
 
     // =============
     // Memory access

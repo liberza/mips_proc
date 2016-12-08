@@ -1,0 +1,78 @@
+-- Copyright (C) 1991-2013 Altera Corporation
+-- Your use of Altera Corporation's design tools, logic functions 
+-- and other software and tools, and its AMPP partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Altera Program License 
+-- Subscription Agreement, Altera MegaCore Function License 
+-- Agreement, or other applicable license agreement, including, 
+-- without limitation, that your use is for the sole purpose of 
+-- programming logic devices manufactured by Altera and sold by 
+-- Altera or its authorized distributors.  Please refer to the 
+-- applicable agreement for further details.
+
+-- Quartus II generated Memory Initialization File (.mif)
+
+WIDTH=32;
+DEPTH=256;
+
+ADDRESS_RADIX=HEX;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+	000  :   3C011001;
+	[001..003]  :   00000000;
+	004  :   34250000;
+	[005..007]  :   00000000;
+	008  :   3C011001;
+	[009..00B]  :   00000000;
+	00C  :   34260070;
+	[00D..00F]  :   00000000;
+	010  :   20100000;
+	[011..013]  :   00000000;
+	014  :   20110000;
+	[015..017]  :   00000000;
+	018  :   00A04825;
+	[019..01B]  :   00000000;
+	01C  :   01205025;
+	[01D..01F]  :   00000000;
+	020  :   8D4B0000;
+	[021..023]  :   00000000;
+	024  :   11600004;
+	[025..02B]  :   00000000;
+	02C  :   214A0004;
+	[02D..02F]  :   00000000;
+	030  :   08100008;
+	[031..037]  :   00000000;
+	038  :   214AFFFC;
+	[039..03B]  :   00000000;
+	03C  :   0149082A;
+	[03D..03F]  :   00000000;
+	040  :   14200009;
+	[041..047]  :   00000000;
+	048  :   8D2B0000;
+	[049..04B]  :   00000000;
+	04C  :   8D4C0000;
+	[04D..04F]  :   00000000;
+	050  :   156C0008;
+	[051..057]  :   00000000;
+	058  :   21290004;
+	[059..05B]  :   00000000;
+	05C  :   214AFFFC;
+	[05D..05F]  :   00000000;
+	060  :   0810000F;
+	[061..067]  :   00000000;
+	068  :   20100001;
+	[069..06B]  :   00000000;
+	06C  :   08100020;
+	[06D..073]  :   00000000;
+	074  :   2010FFFF;
+	[075..077]  :   00000000;
+	078  :   08100020;
+	[079..07F]  :   00000000;
+	080  :   20110001;
+	[081..083]  :   00000000;
+	084  :   08100021;
+	[085..0FF]  :   00000000;
+END;

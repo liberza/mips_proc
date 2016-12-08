@@ -1,0 +1,78 @@
+-- Copyright (C) 1991-2013 Altera Corporation
+-- Your use of Altera Corporation's design tools, logic functions 
+-- and other software and tools, and its AMPP partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Altera Program License 
+-- Subscription Agreement, Altera MegaCore Function License 
+-- Agreement, or other applicable license agreement, including, 
+-- without limitation, that your use is for the sole purpose of 
+-- programming logic devices manufactured by Altera and sold by 
+-- Altera or its authorized distributors.  Please refer to the 
+-- applicable agreement for further details.
+
+-- Quartus II generated Memory Initialization File (.mif)
+
+WIDTH=32;
+DEPTH=256;
+
+ADDRESS_RADIX=HEX;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+	000  :   00000002;
+	[001..003]  :   00000000;
+	004  :   00000003;
+	[005..007]  :   00000000;
+	008  :   00000008;
+	[009..00B]  :   00000000;
+	00C  :   0000000A;
+	[00D..00F]  :   00000000;
+	010  :   00000010;
+	[011..013]  :   00000000;
+	014  :   00000015;
+	[015..017]  :   00000000;
+	018  :   00000023;
+	[019..01B]  :   00000000;
+	01C  :   00000024;
+	[01D..01F]  :   00000000;
+	020  :   00000027;
+	[021..023]  :   00000000;
+	024  :   00000033;
+	[025..027]  :   00000000;
+	028  :   00000001;
+	[029..02B]  :   00000000;
+	02C  :   00000100;
+	[02D..02F]  :   00000000;
+	030  :   00000400;
+	[031..033]  :   00000000;
+	034  :   0000002B;
+	[035..037]  :   00000000;
+	038  :   00000400;
+	[039..03B]  :   00000000;
+	03C  :   00000100;
+	[03D..03F]  :   00000000;
+	040  :   00000001;
+	[041..043]  :   00000000;
+	044  :   00000033;
+	[045..047]  :   00000000;
+	048  :   00000027;
+	[049..04B]  :   00000000;
+	04C  :   00000024;
+	[04D..04F]  :   00000000;
+	050  :   00000023;
+	[051..053]  :   00000000;
+	054  :   00000015;
+	[055..057]  :   00000000;
+	058  :   00000010;
+	[059..05B]  :   00000000;
+	05C  :   0000000A;
+	[05D..05F]  :   00000000;
+	060  :   00000008;
+	[061..063]  :   00000000;
+	064  :   00000003;
+	[065..067]  :   00000000;
+	068  :   00000002;
+	[069..0FF]  :   00000000;
+END;

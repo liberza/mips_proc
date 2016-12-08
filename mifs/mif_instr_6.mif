@@ -1,0 +1,68 @@
+-- Copyright (C) 1991-2013 Altera Corporation
+-- Your use of Altera Corporation's design tools, logic functions 
+-- and other software and tools, and its AMPP partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Altera Program License 
+-- Subscription Agreement, Altera MegaCore Function License 
+-- Agreement, or other applicable license agreement, including, 
+-- without limitation, that your use is for the sole purpose of 
+-- programming logic devices manufactured by Altera and sold by 
+-- Altera or its authorized distributors.  Please refer to the 
+-- applicable agreement for further details.
+
+-- Quartus II generated Memory Initialization File (.mif)
+
+WIDTH=32;
+DEPTH=256;
+
+ADDRESS_RADIX=HEX;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+	000  :   3C011001;
+	[001..003]  :   00000000;
+	004  :   34280000;
+	[005..007]  :   00000000;
+	008  :   8D040000;
+	[009..00B]  :   00000000;
+	00C  :   28810003;
+	[00D..00F]  :   00000000;
+	010  :   1420000A;
+	[011..017]  :   00000000;
+	018  :   34050002;
+	[019..01B]  :   00000000;
+	01C  :   0C100015;
+	[01D..023]  :   00000000;
+	024  :   12000008;
+	[025..02B]  :   00000000;
+	02C  :   20A50001;
+	[02D..02F]  :   00000000;
+	030  :   00A4082A;
+	[031..033]  :   00000000;
+	034  :   1420FFF9;
+	[035..03B]  :   00000000;
+	03C  :   34100001;
+	[03D..03F]  :   00000000;
+	040  :   08100013;
+	[041..047]  :   00000000;
+	048  :   34100000;
+	[049..04B]  :   00000000;
+	04C  :   08100013;
+	[04D..053]  :   00000000;
+	054  :   00805025;
+	[055..057]  :   00000000;
+	058  :   00A04825;
+	[059..05B]  :   00000000;
+	05C  :   01495022;
+	[05D..05F]  :   00000000;
+	060  :   0149082A;
+	[061..063]  :   00000000;
+	064  :   1020FFFD;
+	[065..06B]  :   00000000;
+	06C  :   01408025;
+	[06D..06F]  :   00000000;
+	070  :   03E00008;
+	[071..0FF]  :   00000000;
+END;

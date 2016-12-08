@@ -104,7 +104,7 @@ module controller(input wire[5:0] op,
             aluctrl <= 5'b10000;
         end else if (op == 6'b000000 && func == 6'b001000) begin
             // JR
-            muxctrl <= 16'b0000000010000000;
+            muxctrl <= 16'b0000100010000000;
             memctrl <= 3'b000;
             aluctrl <= 5'b01101;
 
