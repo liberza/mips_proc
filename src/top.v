@@ -27,13 +27,13 @@ module top(
     // ==========================
     wire clock;	// either manual or system clock
     wire clock_debug;
-    wire clk_100hz, clk_1hz;
+    wire clk_100hz, clk_10hz, clk_1hz;
     wire manual_clock;
     wire manual_clock_debug;
     wire reset;
 
     // configure clock.
-    clk_div clk_div1(CLOCK_50,,,,,clk_100hz,,clk_1hz);
+    clk_div clk_div1(CLOCK_50,,,,,clk_100hz,clk_10hz,clk_1hz);
 
     // configure pushbuttons. debounce and pulse-ify.
     debounce db1(KEY[3], clk_100hz, reset);
