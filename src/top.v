@@ -41,7 +41,7 @@ module top(
     debounce db2(KEY[1], clk_100hz, manual_clock);
 
     // allow switching between manual and system clock with SW17.
-    assign clock = ((SW[17] && manual_clock) || (~SW[17] && clk_1hz));
+    assign clock = ((SW[17] && manual_clock) || (~SW[17] && clk_100hz));
     assign clock_debug = (clock || manual_clock_debug);
 
     // =================
